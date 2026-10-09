@@ -7,3 +7,5 @@
 screenshot.png
 /dist/
 /node_modules/
+.venv/
+__pycache__/
