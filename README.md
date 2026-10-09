@@ -4,7 +4,7 @@ Jogo top-down em **C++20 + SFML 3.0.2**, com mundo procedural por chunks, combat
 
 ![Gameplay](docs/screenshots/gameplay.png)
 
-A direção visual segue a referência de Zelda enviada: composição vista de cima, cores rurais, volume por sombras, vegetação em camadas e ataques legíveis. O cenário é original, desenhado proceduralmente. O personagem usa atlas preparados com imagegen a partir da referência de sprites enviada pelo usuário; não usa recursos de Zelda.
+A direção visual segue a referência de Zelda enviada: composição vista de cima, cores rurais, volume por sombras, vegetação em camadas e ataques legíveis. O cenário é original, desenhado proceduralmente. Na Web, galinha, inimigos e cenário usam recortes das oito folhas originais enviadas pelo usuário. A versão SFML ainda usa os atlas da galinha preparados anteriormente; não usa recursos de Zelda.
 
 ## Jogar no celular e telas touch
 
@@ -39,13 +39,12 @@ No Windows, os controles virtuais também aceitam mouse e toque; **F2** exibe/oc
 ## Evolução para o pedido multiplayer
 
 O processamento das sete folhas está documentado em [SPRITES.md](docs/SPRITES.md).
-A nova regra de ovos e o inventário Web já funcionam. Saves v1 são migrados para
+As oito folhas originais foram integradas à Web: galinha adulta, cobras, raposas, pintinhos, árvores, construções, decoração e baús animados. A nova regra de ovos e o inventário Web já funcionam. Saves v1 são migrados para
 v2 preservando inventário; ovos antigos espalhados pelo mapa foram removidos.
 
 A versão atual ainda é individual, com Canvas 2D e salvamento local. Servidor
-autoritativo, cooperação, PostgreSQL, câmera Babylon 2.5D, portas animadas e
-integração das sete folhas originais permanecem pendentes. As imagens exibidas
-na conversa ainda não estão disponíveis como PNGs locais verificáveis.
+autoritativo, cooperação, PostgreSQL e câmera Babylon 2.5D permanecem pendentes.
+As construções têm estados de porta por proximidade; interiores ainda não foram implementados.
 
 ## Jogar no Windows
 

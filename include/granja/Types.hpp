@@ -26,11 +26,12 @@ struct ChunkKey {
 inline ChunkKey chunkAt(Vec p) { return {int(std::floor(p.x/ChunkSize)),int(std::floor(p.y/ChunkSize))}; }
 enum class Terrain { Grass, Meadow, Dirt, Water, Tree, Rock };
 enum class LootKind { Egg, GoldenEgg, Food, Chest };
+enum class Species { Chicken, Snake, Fox };
 enum class Brain { Wander, Chase, Windup, Recover, Dead };
 struct Loot { int id{}; Vec pos{}; LootKind kind{}; bool collected{}; int sourceEnemy{-1}; bool spawned{true}; };
 struct Enemy {
     int id{}; Vec pos{},home{}; float hp{},maxHp{},timer{},cooldown{}; int tier{1}; bool boss{};
-    Brain brain{Brain::Wander}; Vec aim{1,0}; bool rewarded{};
+    Brain brain{Brain::Wander}; Vec aim{1,0}; bool rewarded{}; Species species{Species::Chicken};
 };
 struct EnemyRecord { int id{}; Vec pos{}; float hp{}; bool rewarded{}; };
 struct ChunkRecord { std::vector<int> collected; std::vector<EnemyRecord> enemies; };

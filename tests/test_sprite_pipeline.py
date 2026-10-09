@@ -86,12 +86,29 @@ class PipelineTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, 'fora'):
             pipeline.validate_entry(entry, sheet)
 
+    def test_background_cleanup_keeps_internal_black_details(self):
+        crop = Image.new('RGBA', (12, 12), (0, 0, 0, 255))
+        crop.paste((255, 160, 30, 255), (2, 2, 10, 10))
+        crop.putpixel((5, 5), (0, 0, 0, 255))
+        cleaned = pipeline.remove_border_black(crop)
+        self.assertEqual(cleaned.getpixel((0, 0))[3], 0)
+        self.assertEqual(cleaned.getpixel((5, 5)), (0, 0, 0, 255))
+
+    def test_alpha_residue_cleanup_preserves_foreground_rgba(self):
+        crop = Image.new('RGBA', (12, 12), (30, 90, 30, 80))
+        crop.paste((100, 180, 20, 240), (2, 2, 10, 10))
+        crop.putpixel((5, 5), (150, 200, 40, 120))
+        cleaned = pipeline.remove_border_black(crop, 150)
+        self.assertEqual(cleaned.getpixel((0, 0))[3], 0)
+        self.assertEqual(cleaned.getpixel((3, 3)), (100, 180, 20, 240))
+        self.assertEqual(cleaned.getpixel((5, 5))[3], 120)
+
     def test_missing_inputs_reported_and_review_not_overwritten(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
             manifest = root/'review.json'
             self.assertEqual(pipeline.inspect(root, manifest), 2)
-            self.assertEqual(len(json.loads(manifest.read_text())['missing']), 7)
+            self.assertEqual(len(json.loads(manifest.read_text())['missing']), len(pipeline.SOURCES))
             with self.assertRaisesRegex(ValueError, 'preservar'):
                 pipeline.inspect(root, manifest)
 

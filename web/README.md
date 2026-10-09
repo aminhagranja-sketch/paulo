@@ -10,3 +10,8 @@ Inventário: botão Bolsa ou tecla I. Alimentos podem ser usados pela Bolsa.
 Ovos aparecem somente após a derrota de inimigos; o save v2 mantém drops
 pendentes e coletados. Saves v1 preservam o inventário e migram o estado do mapa.
 A versão ainda é individual; cooperação e persistência de servidor estão pendentes.
+
+As oito folhas originais do RAR são usadas na Web por atlas e metadados.
+Para reimportar: `./scripts/build-game-art.sh` na raiz, com Python/Pillow.
+A loja da vila aceita as melhorias existentes; portas mudam por proximidade.
+Não há interiores nem multiplayer nesta versão.

@@ -16,6 +16,7 @@ public:
     void attack(Vec aim);
     void collect();
     void notify(std::string text);
+    bool atShop() const { return distance(player.pos,{345,124})<85; }
     bool atNest() const { return distance(player.pos,World::nest)<110; }
 private:
     void updateEnemies(float dt);

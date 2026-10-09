@@ -70,7 +70,8 @@ Chunk World::generate(ChunkKey key) const {
 
     }
     if(key==chunkAt(bossHome)) c.enemies.push_back({2000,bossHome,bossHome,480,480,0,0,5,true});
-    for(const auto& enemy:c.enemies) {
+    for(auto& enemy:c.enemies) {
+        enemy.species=enemy.boss?Species::Chicken:enemy.id==1100?Species::Snake:enemy.id==1101?Species::Fox:enemy.id%3==0?Species::Snake:enemy.id%3==1?Species::Fox:Species::Chicken;
         c.loot.push_back({4000+enemy.id*2,enemy.home,LootKind::Egg,false,enemy.id,false});
         if(enemy.tier>=2 || enemy.id%4==0)
             c.loot.push_back({4001+enemy.id*2,enemy.home+Vec{24,0},LootKind::GoldenEgg,false,enemy.id,false});

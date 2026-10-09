@@ -70,4 +70,16 @@ Não foram realizados testes em telefone Android/iPhone físico, Safari móvel o
 - Os cinco testes do pipeline de sprites passaram na entrega anterior.
 
 Não houve teste multiplayer: ainda não existe servidor cooperativo nesta versão.
-Nenhuma das sete folhas novas foi integrada: fontes PNG locais pendentes.
+As oito folhas do RAR foram integradas à versão Web.
+
+## Integração dos sprites originais
+
+- Compilação Linux e WebAssembly concluídas; 26 cenários C++ passaram.
+- Sete testes do pipeline passaram, incluindo limpeza de fundo sem apagar
+  detalhes pretos internos e preservação de RGBA dos pixels de personagem.
+- Playwright/Chromium confirmou carregamento e desenho dos oito atlas de
+  categorias, compra na loja por toque e abertura de baú após coleta no C++.
+- Controles com dois dedos, inventário, save/reload e retrato/paisagem passaram.
+- Screenshots Web foram inspecionados visualmente e ajustados para excluir
+  fragmentos de legendas e sprites vizinhos.
+- Não houve teste em aparelho físico; nenhuma meta de FPS foi comprovada.

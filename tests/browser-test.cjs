@@ -71,9 +71,27 @@ let browser;
  await page.locator('#closeInventory').click();
  await page.keyboard.press('i');await page.locator('#inventory').waitFor({state:'visible'});
  await page.keyboard.press('i');await page.locator('#inventory').waitFor({state:'hidden'});
+ // Load every original atlas and exercise the new village shop via touch.
+ assert.equal(await page.evaluate(()=>window.granjaDebug.sprites.sheets.size),8);
+ await page.evaluate(()=>{const m=window.granjaDebug.module,save=JSON.parse(m.UTF8ToString(m._game_save()));save.player.pos=[345,160];save.player.coins=100;save.player.healthUp=0;save.player.hp=100;m.ccall('game_load','number',['string'],[JSON.stringify(save)]);});
+ await page.waitForFunction(()=>window.granjaDebug.state.player.atShop&&window.granjaDebug.doors.shop>.8);
+ s=await page.evaluate(()=>window.granjaDebug.state);
+ await cdp.send('Input.dispatchTouchEvent',{type:'touchStart',touchPoints:[finger(9,...s.controls.interact)]});
+ await cdp.send('Input.dispatchTouchEvent',{type:'touchEnd',touchPoints:[]});
+ await page.locator('#workshop').waitFor({state:'visible'});await page.locator('[data-upgrade="0"]').click();
+ assert.equal(await page.evaluate(()=>window.granjaDebug.state.player.healthUp),1);
+ await page.locator('#leaveWorkshop').click();
+ // Collection uses C++ rewards and the reviewed chest opening frames.
+ const chest=await page.evaluate(()=>window.granjaDebug.state.loot.find(l=>l[2]===3));assert(chest,'No available chest');
+ await page.evaluate(([x,y])=>{const m=window.granjaDebug.module,save=JSON.parse(m.UTF8ToString(m._game_save()));save.player.pos=[x,y];m.ccall('game_load','number',['string'],[JSON.stringify(save)]);},chest);
+ await page.waitForFunction(()=>window.granjaDebug.openedChests.size>0);
+ assert(await page.evaluate(()=>window.granjaDebug.sprites.drawCounts.get('chests')>0),'Chest sprite was not drawn');
+ for(const category of ['buildings','trees','environment','characters/chicks','characters/chicken','enemies/snake','enemies/fox'])assert(await page.evaluate(c=>window.granjaDebug.sprites.drawCounts.get(c)>0,category),`Original atlas never rendered: ${category}`);
+ await page.evaluate(()=>{const m=window.granjaDebug.module,save=JSON.parse(m.UTF8ToString(m._game_save()));save.player.pos=[160,160];m.ccall('game_load','number',['string'],[JSON.stringify(save)]);});
+ await page.waitForTimeout(100);
  fs.mkdirSync('build/validation/mobile',{recursive:true});await page.screenshot({path:'build/validation/mobile/portrait.png'});
  await page.setViewportSize({width:844,height:390});await page.waitForTimeout(120);await page.screenshot({path:'build/validation/mobile/landscape.png'});
  assert.deepEqual(errors,[],'Browser reported JavaScript/WASM errors');
- console.log('PASS browser: two simultaneous fingers, attack + move, release, cancellation, pause, save reload, portrait/landscape, food, touch workshop, inventory, rendering.');
+ console.log('PASS browser: two simultaneous fingers, attack + move, release, cancellation, pause, save reload, portrait/landscape, food, touch workshop, inventory, eight original atlases, shop, opening chest, rendering.');
  await browser.close();
 })().catch(async e=>{console.error(e);if(browser)await browser.close();process.exit(1);});

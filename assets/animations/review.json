@@ -1,0 +1,2964 @@
+{
+  "version": 1,
+  "missing": [],
+  "sheets": [
+    {
+      "category": "buildings",
+      "source": "3e7f225e-5979-4f0f-b6cb-e4f7544e7836.png",
+      "sha256": "e9524d899e329ccff1935e31b1fa630dabb33d7b7277307a24810657a67f3dfb",
+      "reviewed": true,
+      "frames": [
+        {
+          "id": "house_00",
+          "rect": [
+            9,
+            12,
+            323,
+            317
+          ],
+          "origin": [
+            161.5,
+            313
+          ]
+        },
+        {
+          "id": "house_01",
+          "rect": [
+            336,
+            32,
+            295,
+            296
+          ],
+          "origin": [
+            147.5,
+            292
+          ]
+        },
+        {
+          "id": "house_02",
+          "rect": [
+            630,
+            33,
+            309,
+            295
+          ],
+          "origin": [
+            154.5,
+            291
+          ]
+        },
+        {
+          "id": "house_03",
+          "rect": [
+            940,
+            31,
+            302,
+            299
+          ],
+          "origin": [
+            151.0,
+            295
+          ]
+        },
+        {
+          "id": "house_04",
+          "rect": [
+            1245,
+            31,
+            287,
+            298
+          ],
+          "origin": [
+            143.5,
+            294
+          ]
+        },
+        {
+          "id": "barn_00",
+          "rect": [
+            5,
+            335,
+            313,
+            299
+          ],
+          "origin": [
+            156.5,
+            295
+          ]
+        },
+        {
+          "id": "barn_01",
+          "rect": [
+            319,
+            336,
+            300,
+            299
+          ],
+          "origin": [
+            150.0,
+            295
+          ]
+        },
+        {
+          "id": "barn_02",
+          "rect": [
+            620,
+            335,
+            307,
+            300
+          ],
+          "origin": [
+            153.5,
+            296
+          ]
+        },
+        {
+          "id": "barn_03",
+          "rect": [
+            927,
+            336,
+            289,
+            299
+          ],
+          "origin": [
+            144.5,
+            295
+          ]
+        },
+        {
+          "id": "barn_04",
+          "rect": [
+            1213,
+            336,
+            317,
+            299
+          ],
+          "origin": [
+            158.5,
+            295
+          ]
+        },
+        {
+          "id": "shop_00",
+          "rect": [
+            7,
+            642,
+            293,
+            313
+          ],
+          "origin": [
+            146.5,
+            309
+          ]
+        },
+        {
+          "id": "shop_01",
+          "rect": [
+            302,
+            641,
+            295,
+            315
+          ],
+          "origin": [
+            147.5,
+            311
+          ]
+        },
+        {
+          "id": "shop_02",
+          "rect": [
+            600,
+            641,
+            292,
+            315
+          ],
+          "origin": [
+            146.0,
+            311
+          ]
+        },
+        {
+          "id": "shop_03",
+          "rect": [
+            901,
+            644,
+            294,
+            312
+          ],
+          "origin": [
+            147.0,
+            308
+          ]
+        },
+        {
+          "id": "shop_04",
+          "rect": [
+            1199,
+            641,
+            332,
+            315
+          ],
+          "origin": [
+            166.0,
+            311
+          ]
+        }
+      ],
+      "animations": {
+        "house": {
+          "frames": [
+            "house_00",
+            "house_01",
+            "house_02",
+            "house_03",
+            "house_04"
+          ],
+          "fps": 5,
+          "loop": false
+        },
+        "barn": {
+          "frames": [
+            "barn_00",
+            "barn_01",
+            "barn_02",
+            "barn_03",
+            "barn_04"
+          ],
+          "fps": 5,
+          "loop": false
+        },
+        "shop": {
+          "frames": [
+            "shop_00",
+            "shop_01",
+            "shop_02",
+            "shop_03",
+            "shop_04"
+          ],
+          "fps": 5,
+          "loop": false
+        }
+      },
+      "reviewNotes": "Regiões conferidas visualmente nas folhas originais; sequências limitadas aos quadros existentes. Resíduos de alfa inferior a 150 conectados à borda do recorte são removidos; a fonte é preservada.",
+      "cleanBorderAlpha": 150
+    },
+    {
+      "category": "chests",
+      "source": "e2b20b93-8799-4092-a400-14b2df516e3a.png",
+      "sha256": "bffaaa62c4fefd57d84a1f1a24562c8a378154a432006672bb1a83fbfd6134dc",
+      "reviewed": true,
+      "frames": [
+        {
+          "id": "common_00",
+          "rect": [
+            7,
+            0,
+            213,
+            182
+          ],
+          "origin": [
+            106.5,
+            178
+          ]
+        },
+        {
+          "id": "common_01",
+          "rect": [
+            222,
+            0,
+            210,
+            182
+          ],
+          "origin": [
+            105.0,
+            178
+          ]
+        },
+        {
+          "id": "common_02",
+          "rect": [
+            435,
+            0,
+            211,
+            182
+          ],
+          "origin": [
+            105.5,
+            178
+          ]
+        },
+        {
+          "id": "common_03",
+          "rect": [
+            647,
+            0,
+            207,
+            182
+          ],
+          "origin": [
+            103.5,
+            178
+          ]
+        },
+        {
+          "id": "common_04",
+          "rect": [
+            855,
+            0,
+            220,
+            182
+          ],
+          "origin": [
+            110.0,
+            178
+          ]
+        },
+        {
+          "id": "common_05",
+          "rect": [
+            1077,
+            0,
+            226,
+            182
+          ],
+          "origin": [
+            113.0,
+            178
+          ]
+        },
+        {
+          "id": "common_06",
+          "rect": [
+            1305,
+            0,
+            228,
+            182
+          ],
+          "origin": [
+            114.0,
+            178
+          ]
+        },
+        {
+          "id": "legendary_00",
+          "rect": [
+            7,
+            181,
+            213,
+            167
+          ],
+          "origin": [
+            106.5,
+            163
+          ]
+        },
+        {
+          "id": "legendary_01",
+          "rect": [
+            222,
+            181,
+            210,
+            167
+          ],
+          "origin": [
+            105.0,
+            163
+          ]
+        },
+        {
+          "id": "legendary_02",
+          "rect": [
+            435,
+            181,
+            211,
+            167
+          ],
+          "origin": [
+            105.5,
+            163
+          ]
+        },
+        {
+          "id": "legendary_03",
+          "rect": [
+            647,
+            181,
+            207,
+            167
+          ],
+          "origin": [
+            103.5,
+            163
+          ]
+        },
+        {
+          "id": "legendary_04",
+          "rect": [
+            855,
+            181,
+            220,
+            167
+          ],
+          "origin": [
+            110.0,
+            163
+          ]
+        },
+        {
+          "id": "legendary_05",
+          "rect": [
+            1077,
+            181,
+            226,
+            167
+          ],
+          "origin": [
+            113.0,
+            163
+          ]
+        },
+        {
+          "id": "legendary_06",
+          "rect": [
+            1305,
+            181,
+            228,
+            167
+          ],
+          "origin": [
+            114.0,
+            163
+          ]
+        },
+        {
+          "id": "rare_00",
+          "rect": [
+            7,
+            347,
+            213,
+            170
+          ],
+          "origin": [
+            106.5,
+            166
+          ]
+        },
+        {
+          "id": "rare_01",
+          "rect": [
+            222,
+            347,
+            210,
+            170
+          ],
+          "origin": [
+            105.0,
+            166
+          ]
+        },
+        {
+          "id": "rare_02",
+          "rect": [
+            435,
+            347,
+            211,
+            170
+          ],
+          "origin": [
+            105.5,
+            166
+          ]
+        },
+        {
+          "id": "rare_03",
+          "rect": [
+            647,
+            347,
+            207,
+            170
+          ],
+          "origin": [
+            103.5,
+            166
+          ]
+        },
+        {
+          "id": "rare_04",
+          "rect": [
+            855,
+            347,
+            220,
+            170
+          ],
+          "origin": [
+            110.0,
+            166
+          ]
+        },
+        {
+          "id": "rare_05",
+          "rect": [
+            1077,
+            347,
+            226,
+            170
+          ],
+          "origin": [
+            113.0,
+            166
+          ]
+        },
+        {
+          "id": "rare_06",
+          "rect": [
+            1305,
+            347,
+            228,
+            170
+          ],
+          "origin": [
+            114.0,
+            166
+          ]
+        },
+        {
+          "id": "epic_00",
+          "rect": [
+            7,
+            515,
+            213,
+            165
+          ],
+          "origin": [
+            106.5,
+            161
+          ]
+        },
+        {
+          "id": "epic_01",
+          "rect": [
+            222,
+            515,
+            210,
+            165
+          ],
+          "origin": [
+            105.0,
+            161
+          ]
+        },
+        {
+          "id": "epic_02",
+          "rect": [
+            435,
+            515,
+            211,
+            165
+          ],
+          "origin": [
+            105.5,
+            161
+          ]
+        },
+        {
+          "id": "epic_03",
+          "rect": [
+            647,
+            515,
+            207,
+            165
+          ],
+          "origin": [
+            103.5,
+            161
+          ]
+        },
+        {
+          "id": "epic_04",
+          "rect": [
+            855,
+            515,
+            220,
+            165
+          ],
+          "origin": [
+            110.0,
+            161
+          ]
+        },
+        {
+          "id": "epic_05",
+          "rect": [
+            1077,
+            515,
+            226,
+            165
+          ],
+          "origin": [
+            113.0,
+            161
+          ]
+        },
+        {
+          "id": "epic_06",
+          "rect": [
+            1305,
+            515,
+            228,
+            165
+          ],
+          "origin": [
+            114.0,
+            161
+          ]
+        },
+        {
+          "id": "natural_00",
+          "rect": [
+            7,
+            677,
+            213,
+            162
+          ],
+          "origin": [
+            106.5,
+            158
+          ]
+        },
+        {
+          "id": "natural_01",
+          "rect": [
+            222,
+            677,
+            210,
+            162
+          ],
+          "origin": [
+            105.0,
+            158
+          ]
+        },
+        {
+          "id": "natural_02",
+          "rect": [
+            435,
+            677,
+            211,
+            162
+          ],
+          "origin": [
+            105.5,
+            158
+          ]
+        },
+        {
+          "id": "natural_03",
+          "rect": [
+            647,
+            677,
+            207,
+            162
+          ],
+          "origin": [
+            103.5,
+            158
+          ]
+        },
+        {
+          "id": "natural_04",
+          "rect": [
+            855,
+            677,
+            220,
+            162
+          ],
+          "origin": [
+            110.0,
+            158
+          ]
+        },
+        {
+          "id": "natural_05",
+          "rect": [
+            1077,
+            677,
+            226,
+            162
+          ],
+          "origin": [
+            113.0,
+            158
+          ]
+        },
+        {
+          "id": "natural_06",
+          "rect": [
+            1305,
+            677,
+            228,
+            162
+          ],
+          "origin": [
+            114.0,
+            158
+          ]
+        },
+        {
+          "id": "infernal_00",
+          "rect": [
+            7,
+            839,
+            213,
+            184
+          ],
+          "origin": [
+            106.5,
+            180
+          ]
+        },
+        {
+          "id": "infernal_01",
+          "rect": [
+            222,
+            839,
+            210,
+            184
+          ],
+          "origin": [
+            105.0,
+            180
+          ]
+        },
+        {
+          "id": "infernal_02",
+          "rect": [
+            435,
+            839,
+            211,
+            184
+          ],
+          "origin": [
+            105.5,
+            180
+          ]
+        },
+        {
+          "id": "infernal_03",
+          "rect": [
+            647,
+            839,
+            207,
+            184
+          ],
+          "origin": [
+            103.5,
+            180
+          ]
+        },
+        {
+          "id": "infernal_04",
+          "rect": [
+            855,
+            839,
+            220,
+            184
+          ],
+          "origin": [
+            110.0,
+            180
+          ]
+        },
+        {
+          "id": "infernal_05",
+          "rect": [
+            1077,
+            839,
+            226,
+            184
+          ],
+          "origin": [
+            113.0,
+            180
+          ]
+        },
+        {
+          "id": "infernal_06",
+          "rect": [
+            1305,
+            839,
+            228,
+            184
+          ],
+          "origin": [
+            114.0,
+            180
+          ]
+        }
+      ],
+      "animations": {
+        "common": {
+          "frames": [
+            "common_00",
+            "common_01",
+            "common_02",
+            "common_03",
+            "common_04",
+            "common_05",
+            "common_06"
+          ],
+          "fps": 8,
+          "loop": false
+        },
+        "legendary": {
+          "frames": [
+            "legendary_00",
+            "legendary_01",
+            "legendary_02",
+            "legendary_03",
+            "legendary_04",
+            "legendary_05",
+            "legendary_06"
+          ],
+          "fps": 8,
+          "loop": false
+        },
+        "rare": {
+          "frames": [
+            "rare_00",
+            "rare_01",
+            "rare_02",
+            "rare_03",
+            "rare_04",
+            "rare_05",
+            "rare_06"
+          ],
+          "fps": 8,
+          "loop": false
+        },
+        "epic": {
+          "frames": [
+            "epic_00",
+            "epic_01",
+            "epic_02",
+            "epic_03",
+            "epic_04",
+            "epic_05",
+            "epic_06"
+          ],
+          "fps": 8,
+          "loop": false
+        },
+        "natural": {
+          "frames": [
+            "natural_00",
+            "natural_01",
+            "natural_02",
+            "natural_03",
+            "natural_04",
+            "natural_05",
+            "natural_06"
+          ],
+          "fps": 8,
+          "loop": false
+        },
+        "infernal": {
+          "frames": [
+            "infernal_00",
+            "infernal_01",
+            "infernal_02",
+            "infernal_03",
+            "infernal_04",
+            "infernal_05",
+            "infernal_06"
+          ],
+          "fps": 8,
+          "loop": false
+        }
+      },
+      "reviewNotes": "Regiões conferidas visualmente nas folhas originais; sequências limitadas aos quadros existentes. Resíduos de alfa inferior a 150 conectados à borda do recorte são removidos; a fonte é preservada.",
+      "cleanBorderAlpha": 150
+    },
+    {
+      "category": "trees",
+      "source": "4f1a5112-b608-47c7-aaf7-6be980fe74d9.png",
+      "sha256": "7cafbf4d761065014b9397056caa1bf9a939de4ec91b1340292a829f49911cc0",
+      "reviewed": true,
+      "frames": [
+        {
+          "id": "green_00",
+          "rect": [
+            10,
+            4,
+            181,
+            219
+          ],
+          "origin": [
+            90.5,
+            215
+          ]
+        },
+        {
+          "id": "green_01",
+          "rect": [
+            194,
+            9,
+            158,
+            214
+          ],
+          "origin": [
+            79.0,
+            210
+          ]
+        },
+        {
+          "id": "green_02",
+          "rect": [
+            344,
+            13,
+            148,
+            210
+          ],
+          "origin": [
+            74.0,
+            206
+          ]
+        },
+        {
+          "id": "green_03",
+          "rect": [
+            484,
+            15,
+            151,
+            208
+          ],
+          "origin": [
+            75.5,
+            204
+          ]
+        },
+        {
+          "id": "pink_00",
+          "rect": [
+            8,
+            226,
+            194,
+            200
+          ],
+          "origin": [
+            97.0,
+            196
+          ]
+        },
+        {
+          "id": "pink_01",
+          "rect": [
+            202,
+            234,
+            158,
+            192
+          ],
+          "origin": [
+            79.0,
+            188
+          ]
+        },
+        {
+          "id": "pink_02",
+          "rect": [
+            364,
+            235,
+            154,
+            191
+          ],
+          "origin": [
+            77.0,
+            187
+          ]
+        },
+        {
+          "id": "pink_03",
+          "rect": [
+            519,
+            236,
+            161,
+            190
+          ],
+          "origin": [
+            80.5,
+            186
+          ]
+        },
+        {
+          "id": "autumn_00",
+          "rect": [
+            7,
+            430,
+            197,
+            194
+          ],
+          "origin": [
+            98.5,
+            190
+          ]
+        },
+        {
+          "id": "autumn_01",
+          "rect": [
+            206,
+            435,
+            161,
+            188
+          ],
+          "origin": [
+            80.5,
+            184
+          ]
+        },
+        {
+          "id": "autumn_02",
+          "rect": [
+            364,
+            438,
+            169,
+            185
+          ],
+          "origin": [
+            84.5,
+            181
+          ]
+        },
+        {
+          "id": "autumn_03",
+          "rect": [
+            525,
+            439,
+            169,
+            184
+          ],
+          "origin": [
+            84.5,
+            180
+          ]
+        },
+        {
+          "id": "palm_00",
+          "rect": [
+            13,
+            630,
+            173,
+            192
+          ],
+          "origin": [
+            86.5,
+            188
+          ]
+        },
+        {
+          "id": "palm_01",
+          "rect": [
+            169,
+            632,
+            173,
+            190
+          ],
+          "origin": [
+            86.5,
+            186
+          ]
+        },
+        {
+          "id": "palm_02",
+          "rect": [
+            329,
+            632,
+            175,
+            190
+          ],
+          "origin": [
+            87.5,
+            186
+          ]
+        },
+        {
+          "id": "palm_03",
+          "rect": [
+            477,
+            633,
+            176,
+            189
+          ],
+          "origin": [
+            88.0,
+            185
+          ]
+        },
+        {
+          "id": "pine_00",
+          "rect": [
+            14,
+            825,
+            156,
+            190
+          ],
+          "origin": [
+            78.0,
+            186
+          ]
+        },
+        {
+          "id": "pine_01",
+          "rect": [
+            174,
+            825,
+            146,
+            189
+          ],
+          "origin": [
+            73.0,
+            185
+          ]
+        },
+        {
+          "id": "pine_02",
+          "rect": [
+            320,
+            829,
+            145,
+            185
+          ],
+          "origin": [
+            72.5,
+            181
+          ]
+        },
+        {
+          "id": "pine_03",
+          "rect": [
+            469,
+            829,
+            138,
+            185
+          ],
+          "origin": [
+            69.0,
+            181
+          ]
+        },
+        {
+          "id": "stump",
+          "rect": [
+            1432,
+            153,
+            99,
+            73
+          ],
+          "origin": [
+            49.5,
+            69
+          ]
+        }
+      ],
+      "animations": {
+        "green": {
+          "frames": [
+            "green_00",
+            "green_01",
+            "green_02",
+            "green_03"
+          ],
+          "fps": 2,
+          "loop": true
+        },
+        "pink": {
+          "frames": [
+            "pink_00",
+            "pink_01",
+            "pink_02",
+            "pink_03"
+          ],
+          "fps": 2,
+          "loop": true
+        },
+        "autumn": {
+          "frames": [
+            "autumn_00",
+            "autumn_01",
+            "autumn_02",
+            "autumn_03"
+          ],
+          "fps": 2,
+          "loop": true
+        },
+        "palm": {
+          "frames": [
+            "palm_00",
+            "palm_01",
+            "palm_02",
+            "palm_03"
+          ],
+          "fps": 2,
+          "loop": true
+        },
+        "pine": {
+          "frames": [
+            "pine_00",
+            "pine_01",
+            "pine_02",
+            "pine_03"
+          ],
+          "fps": 2,
+          "loop": true
+        }
+      },
+      "reviewNotes": "Regiões conferidas visualmente nas folhas originais; sequências limitadas aos quadros existentes. Resíduos de alfa inferior a 150 conectados à borda do recorte são removidos; a fonte é preservada.",
+      "cleanBorderAlpha": 150
+    },
+    {
+      "category": "environment",
+      "source": "591f28fd-06f3-46d7-bce3-11dfd7e2e488.png",
+      "sha256": "36f3f6313a48dfd147a62c5cee33567e11f0770f4cbaa7d1a5a59e04d15ce0cd",
+      "reviewed": true,
+      "frames": [
+        {
+          "id": "column",
+          "rect": [
+            8,
+            4,
+            123,
+            182
+          ],
+          "origin": [
+            61.5,
+            178
+          ]
+        },
+        {
+          "id": "rock",
+          "rect": [
+            1,
+            189,
+            215,
+            166
+          ],
+          "origin": [
+            107.5,
+            162
+          ]
+        },
+        {
+          "id": "rock2",
+          "rect": [
+            217,
+            190,
+            181,
+            164
+          ],
+          "origin": [
+            90.5,
+            160
+          ]
+        },
+        {
+          "id": "fence",
+          "rect": [
+            3,
+            352,
+            293,
+            154
+          ],
+          "origin": [
+            146.5,
+            150
+          ]
+        },
+        {
+          "id": "lantern",
+          "rect": [
+            833,
+            358,
+            135,
+            217
+          ],
+          "origin": [
+            67.5,
+            213
+          ]
+        },
+        {
+          "id": "arch",
+          "rect": [
+            1244,
+            355,
+            287,
+            276
+          ],
+          "origin": [
+            143.5,
+            272
+          ]
+        },
+        {
+          "id": "stairs",
+          "rect": [
+            1093,
+            358,
+            191,
+            160
+          ],
+          "origin": [
+            95.5,
+            156
+          ]
+        },
+        {
+          "id": "barrel",
+          "rect": [
+            5,
+            510,
+            157,
+            153
+          ],
+          "origin": [
+            78.5,
+            149
+          ]
+        },
+        {
+          "id": "flowers",
+          "rect": [
+            507,
+            663,
+            82,
+            119
+          ],
+          "origin": [
+            41,
+            115
+          ]
+        },
+        {
+          "id": "flowers2",
+          "rect": [
+            796,
+            703,
+            83,
+            91
+          ],
+          "origin": [
+            41,
+            87
+          ]
+        },
+        {
+          "id": "bush",
+          "rect": [
+            7,
+            658,
+            212,
+            128
+          ],
+          "origin": [
+            106.0,
+            124
+          ]
+        },
+        {
+          "id": "cart",
+          "rect": [
+            1264,
+            626,
+            268,
+            205
+          ],
+          "origin": [
+            134.0,
+            201
+          ]
+        }
+      ],
+      "animations": {},
+      "reviewNotes": "Regiões conferidas visualmente nas folhas originais; sequências limitadas aos quadros existentes. Resíduos de alfa inferior a 150 conectados à borda do recorte são removidos; a fonte é preservada.",
+      "cleanBorderAlpha": 150
+    },
+    {
+      "category": "enemies/fox",
+      "source": "bef336d9-407a-4ad2-a747-f4ff3616e2ba.png",
+      "sha256": "ee76db8bfd2edeb7150c8d72dd9e085da94d047aae04f1125f55e86744ce0588",
+      "reviewed": true,
+      "frames": [
+        {
+          "id": "idle_00",
+          "rect": [
+            11,
+            0,
+            195,
+            168
+          ],
+          "origin": [
+            97.5,
+            164
+          ]
+        },
+        {
+          "id": "walk_00",
+          "rect": [
+            5,
+            166,
+            169,
+            119
+          ],
+          "origin": [
+            84.5,
+            115
+          ]
+        },
+        {
+          "id": "walk_01",
+          "rect": [
+            173,
+            166,
+            174,
+            119
+          ],
+          "origin": [
+            87.0,
+            115
+          ]
+        },
+        {
+          "id": "walk_02",
+          "rect": [
+            348,
+            166,
+            184,
+            119
+          ],
+          "origin": [
+            92.0,
+            115
+          ]
+        },
+        {
+          "id": "walk_03",
+          "rect": [
+            532,
+            166,
+            198,
+            119
+          ],
+          "origin": [
+            99.0,
+            115
+          ]
+        },
+        {
+          "id": "walk_04",
+          "rect": [
+            732,
+            166,
+            193,
+            119
+          ],
+          "origin": [
+            96.5,
+            115
+          ]
+        },
+        {
+          "id": "walk_05",
+          "rect": [
+            926,
+            166,
+            239,
+            119
+          ],
+          "origin": [
+            119.5,
+            115
+          ]
+        },
+        {
+          "id": "walk_06",
+          "rect": [
+            1166,
+            166,
+            188,
+            119
+          ],
+          "origin": [
+            94.0,
+            115
+          ]
+        },
+        {
+          "id": "walk_07",
+          "rect": [
+            1357,
+            166,
+            178,
+            119
+          ],
+          "origin": [
+            89.0,
+            115
+          ]
+        },
+        {
+          "id": "bite_00",
+          "rect": [
+            365,
+            285,
+            210,
+            135
+          ],
+          "origin": [
+            105.0,
+            131
+          ]
+        },
+        {
+          "id": "bite_01",
+          "rect": [
+            576,
+            285,
+            203,
+            135
+          ],
+          "origin": [
+            101.5,
+            131
+          ]
+        },
+        {
+          "id": "bite_02",
+          "rect": [
+            780,
+            285,
+            200,
+            135
+          ],
+          "origin": [
+            100.0,
+            131
+          ]
+        },
+        {
+          "id": "hit_00",
+          "rect": [
+            265,
+            697,
+            153,
+            141
+          ],
+          "origin": [
+            76.5,
+            137
+          ]
+        },
+        {
+          "id": "hit_01",
+          "rect": [
+            420,
+            697,
+            147,
+            141
+          ],
+          "origin": [
+            73.5,
+            137
+          ]
+        },
+        {
+          "id": "death_00",
+          "rect": [
+            1278,
+            710,
+            256,
+            123
+          ],
+          "origin": [
+            128.0,
+            119
+          ]
+        }
+      ],
+      "animations": {
+        "idle": {
+          "frames": [
+            "idle_00"
+          ],
+          "fps": 1,
+          "loop": true
+        },
+        "walk": {
+          "frames": [
+            "walk_00",
+            "walk_01",
+            "walk_02",
+            "walk_03",
+            "walk_04",
+            "walk_05",
+            "walk_06",
+            "walk_07"
+          ],
+          "fps": 9,
+          "loop": true
+        },
+        "bite": {
+          "frames": [
+            "bite_00",
+            "bite_01",
+            "bite_02"
+          ],
+          "fps": 8,
+          "loop": false
+        },
+        "hit": {
+          "frames": [
+            "hit_00",
+            "hit_01"
+          ],
+          "fps": 6,
+          "loop": false
+        },
+        "death": {
+          "frames": [
+            "death_00"
+          ],
+          "fps": 1,
+          "loop": false
+        }
+      },
+      "reviewNotes": "Regiões conferidas visualmente nas folhas originais; sequências limitadas aos quadros existentes. Resíduos de alfa inferior a 150 conectados à borda do recorte são removidos; a fonte é preservada.",
+      "cleanBorderAlpha": 150
+    },
+    {
+      "category": "enemies/snake",
+      "source": "15681c87-bdbc-446b-a3c2-c1d3853e999a.png",
+      "sha256": "86ac61638b0910354eb1bd76fedeaa0564ee67aa8a90303e9dc9369937ef723a",
+      "reviewed": true,
+      "frames": [
+        {
+          "id": "idle_00",
+          "rect": [
+            9,
+            0,
+            157,
+            146
+          ],
+          "origin": [
+            78.5,
+            142
+          ]
+        },
+        {
+          "id": "idle_01",
+          "rect": [
+            166,
+            0,
+            134,
+            146
+          ],
+          "origin": [
+            67.0,
+            142
+          ]
+        },
+        {
+          "id": "idle_02",
+          "rect": [
+            301,
+            0,
+            135,
+            146
+          ],
+          "origin": [
+            67.5,
+            142
+          ]
+        },
+        {
+          "id": "move_00",
+          "rect": [
+            0,
+            146,
+            166,
+            120
+          ],
+          "origin": [
+            83.0,
+            116
+          ]
+        },
+        {
+          "id": "move_01",
+          "rect": [
+            167,
+            146,
+            183,
+            120
+          ],
+          "origin": [
+            91.5,
+            116
+          ]
+        },
+        {
+          "id": "move_02",
+          "rect": [
+            351,
+            146,
+            189,
+            120
+          ],
+          "origin": [
+            94.5,
+            116
+          ]
+        },
+        {
+          "id": "move_03",
+          "rect": [
+            541,
+            146,
+            180,
+            120
+          ],
+          "origin": [
+            90.0,
+            116
+          ]
+        },
+        {
+          "id": "move_04",
+          "rect": [
+            722,
+            146,
+            191,
+            120
+          ],
+          "origin": [
+            95.5,
+            116
+          ]
+        },
+        {
+          "id": "move_05",
+          "rect": [
+            914,
+            146,
+            199,
+            120
+          ],
+          "origin": [
+            99.5,
+            116
+          ]
+        },
+        {
+          "id": "move_06",
+          "rect": [
+            1114,
+            146,
+            222,
+            120
+          ],
+          "origin": [
+            111.0,
+            116
+          ]
+        },
+        {
+          "id": "move_07",
+          "rect": [
+            1337,
+            146,
+            198,
+            120
+          ],
+          "origin": [
+            99.0,
+            116
+          ]
+        },
+        {
+          "id": "bite_00",
+          "rect": [
+            4,
+            269,
+            172,
+            143
+          ],
+          "origin": [
+            86.0,
+            139
+          ]
+        },
+        {
+          "id": "bite_01",
+          "rect": [
+            178,
+            269,
+            226,
+            143
+          ],
+          "origin": [
+            113.0,
+            139
+          ]
+        },
+        {
+          "id": "bite_02",
+          "rect": [
+            654,
+            267,
+            208,
+            146
+          ],
+          "origin": [
+            104.0,
+            142
+          ]
+        },
+        {
+          "id": "poison_00",
+          "rect": [
+            594,
+            411,
+            209,
+            171
+          ],
+          "origin": [
+            104.5,
+            167
+          ]
+        },
+        {
+          "id": "poison_01",
+          "rect": [
+            804,
+            411,
+            170,
+            171
+          ],
+          "origin": [
+            85.0,
+            167
+          ]
+        },
+        {
+          "id": "poison_02",
+          "rect": [
+            974,
+            411,
+            180,
+            171
+          ],
+          "origin": [
+            90.0,
+            167
+          ]
+        },
+        {
+          "id": "poison_03",
+          "rect": [
+            1154,
+            411,
+            196,
+            171
+          ],
+          "origin": [
+            98.0,
+            167
+          ]
+        },
+        {
+          "id": "hit_00",
+          "rect": [
+            3,
+            563,
+            198,
+            132
+          ],
+          "origin": [
+            99.0,
+            128
+          ]
+        },
+        {
+          "id": "hit_01",
+          "rect": [
+            202,
+            563,
+            191,
+            132
+          ],
+          "origin": [
+            95.5,
+            128
+          ]
+        },
+        {
+          "id": "death_00",
+          "rect": [
+            571,
+            575,
+            220,
+            121
+          ],
+          "origin": [
+            110.0,
+            117
+          ]
+        },
+        {
+          "id": "death_01",
+          "rect": [
+            792,
+            575,
+            175,
+            121
+          ],
+          "origin": [
+            87.5,
+            117
+          ]
+        },
+        {
+          "id": "death_02",
+          "rect": [
+            968,
+            575,
+            170,
+            121
+          ],
+          "origin": [
+            85.0,
+            117
+          ]
+        },
+        {
+          "id": "death_03",
+          "rect": [
+            1139,
+            575,
+            183,
+            121
+          ],
+          "origin": [
+            91.5,
+            117
+          ]
+        },
+        {
+          "id": "death_04",
+          "rect": [
+            1323,
+            575,
+            212,
+            121
+          ],
+          "origin": [
+            106.0,
+            117
+          ]
+        }
+      ],
+      "animations": {
+        "idle": {
+          "frames": [
+            "idle_00",
+            "idle_01",
+            "idle_02"
+          ],
+          "fps": 3,
+          "loop": true
+        },
+        "move": {
+          "frames": [
+            "move_00",
+            "move_01",
+            "move_02",
+            "move_03",
+            "move_04",
+            "move_05",
+            "move_06",
+            "move_07"
+          ],
+          "fps": 7,
+          "loop": true
+        },
+        "bite": {
+          "frames": [
+            "bite_00",
+            "bite_01",
+            "bite_02"
+          ],
+          "fps": 7,
+          "loop": false
+        },
+        "poison": {
+          "frames": [
+            "poison_00",
+            "poison_01",
+            "poison_02",
+            "poison_03"
+          ],
+          "fps": 8,
+          "loop": false
+        },
+        "hit": {
+          "frames": [
+            "hit_00",
+            "hit_01"
+          ],
+          "fps": 6,
+          "loop": false
+        },
+        "death": {
+          "frames": [
+            "death_00",
+            "death_01",
+            "death_02",
+            "death_03",
+            "death_04"
+          ],
+          "fps": 7,
+          "loop": false
+        }
+      },
+      "reviewNotes": "Regiões conferidas visualmente nas folhas originais; sequências limitadas aos quadros existentes. Resíduos de alfa inferior a 150 conectados à borda do recorte são removidos; a fonte é preservada.",
+      "cleanBorderAlpha": 150
+    },
+    {
+      "category": "characters/chicks",
+      "source": "ca70ca01-1579-450b-9d26-5dd3eab5ecb5.png",
+      "sha256": "75ee9b2949041ab2ad72f8c7731a05a2810078df1925ac892b9b1bb902ccdf11",
+      "reviewed": true,
+      "frames": [
+        {
+          "id": "idle_00",
+          "rect": [
+            10,
+            8,
+            118,
+            178
+          ],
+          "origin": [
+            59.0,
+            174
+          ]
+        },
+        {
+          "id": "walk_00",
+          "rect": [
+            274,
+            9,
+            132,
+            178
+          ],
+          "origin": [
+            66.0,
+            174
+          ]
+        },
+        {
+          "id": "walk_01",
+          "rect": [
+            411,
+            9,
+            130,
+            178
+          ],
+          "origin": [
+            65.0,
+            174
+          ]
+        },
+        {
+          "id": "walk_02",
+          "rect": [
+            550,
+            9,
+            136,
+            178
+          ],
+          "origin": [
+            68.0,
+            174
+          ]
+        },
+        {
+          "id": "walk_03",
+          "rect": [
+            687,
+            9,
+            139,
+            178
+          ],
+          "origin": [
+            69.5,
+            174
+          ]
+        },
+        {
+          "id": "walk_04",
+          "rect": [
+            827,
+            9,
+            144,
+            178
+          ],
+          "origin": [
+            72.0,
+            174
+          ]
+        },
+        {
+          "id": "happy_00",
+          "rect": [
+            4,
+            190,
+            139,
+            155
+          ],
+          "origin": [
+            69.5,
+            151
+          ]
+        },
+        {
+          "id": "happy_01",
+          "rect": [
+            144,
+            190,
+            181,
+            155
+          ],
+          "origin": [
+            90.5,
+            151
+          ]
+        },
+        {
+          "id": "sleep_00",
+          "rect": [
+            12,
+            531,
+            160,
+            140
+          ],
+          "origin": [
+            80.0,
+            136
+          ]
+        },
+        {
+          "id": "sleep_01",
+          "rect": [
+            176,
+            531,
+            169,
+            140
+          ],
+          "origin": [
+            84.5,
+            136
+          ]
+        },
+        {
+          "id": "hatch_00",
+          "rect": [
+            6,
+            356,
+            132,
+            169
+          ],
+          "origin": [
+            66.0,
+            165
+          ]
+        },
+        {
+          "id": "hatch_01",
+          "rect": [
+            146,
+            356,
+            130,
+            169
+          ],
+          "origin": [
+            65.0,
+            165
+          ]
+        },
+        {
+          "id": "hatch_02",
+          "rect": [
+            290,
+            350,
+            139,
+            175
+          ],
+          "origin": [
+            69.5,
+            171
+          ]
+        },
+        {
+          "id": "hatch_03",
+          "rect": [
+            433,
+            350,
+            145,
+            175
+          ],
+          "origin": [
+            72.5,
+            171
+          ]
+        },
+        {
+          "id": "hatch_04",
+          "rect": [
+            589,
+            350,
+            151,
+            175
+          ],
+          "origin": [
+            75.5,
+            171
+          ]
+        },
+        {
+          "id": "eat_00",
+          "rect": [
+            6,
+            690,
+            151,
+            145
+          ],
+          "origin": [
+            75.5,
+            141
+          ]
+        },
+        {
+          "id": "eat_01",
+          "rect": [
+            158,
+            690,
+            151,
+            145
+          ],
+          "origin": [
+            75.5,
+            141
+          ]
+        }
+      ],
+      "animations": {
+        "idle": {
+          "frames": [
+            "idle_00"
+          ],
+          "fps": 1,
+          "loop": true
+        },
+        "walk": {
+          "frames": [
+            "walk_00",
+            "walk_01",
+            "walk_02",
+            "walk_03",
+            "walk_04"
+          ],
+          "fps": 7,
+          "loop": true
+        },
+        "happy": {
+          "frames": [
+            "happy_00",
+            "happy_01"
+          ],
+          "fps": 5,
+          "loop": true
+        },
+        "sleep": {
+          "frames": [
+            "sleep_00",
+            "sleep_01"
+          ],
+          "fps": 2,
+          "loop": true
+        },
+        "hatch": {
+          "frames": [
+            "hatch_00",
+            "hatch_01",
+            "hatch_02",
+            "hatch_03",
+            "hatch_04"
+          ],
+          "fps": 5,
+          "loop": false
+        },
+        "eat": {
+          "frames": [
+            "eat_00",
+            "eat_01"
+          ],
+          "fps": 4,
+          "loop": true
+        }
+      },
+      "reviewNotes": "Regiões conferidas visualmente nas folhas originais; sequências limitadas aos quadros existentes. Resíduos de alfa inferior a 150 conectados à borda do recorte são removidos; a fonte é preservada.",
+      "cleanBorderAlpha": 150
+    },
+    {
+      "category": "characters/chicken",
+      "source": "5462a363-df7e-4da6-b2ce-1a715d75e117.png",
+      "sha256": "5f82404880f3ea1de31ea7fec6a3905807957a74db99fd7c9bf6ed4666a91121",
+      "reviewed": true,
+      "frames": [
+        {
+          "id": "idle_down_00",
+          "rect": [
+            47,
+            38,
+            86,
+            122
+          ],
+          "origin": [
+            43.0,
+            118
+          ]
+        },
+        {
+          "id": "idle_left_00",
+          "rect": [
+            911,
+            21,
+            101,
+            140
+          ],
+          "origin": [
+            50.5,
+            136
+          ]
+        },
+        {
+          "id": "idle_right_00",
+          "rect": [
+            281,
+            20,
+            100,
+            141
+          ],
+          "origin": [
+            50,
+            137
+          ]
+        },
+        {
+          "id": "idle_up_00",
+          "rect": [
+            783,
+            21,
+            101,
+            139
+          ],
+          "origin": [
+            50.5,
+            135
+          ]
+        },
+        {
+          "id": "walk_down_00",
+          "rect": [
+            9,
+            202,
+            69,
+            97
+          ],
+          "origin": [
+            34.5,
+            93
+          ]
+        },
+        {
+          "id": "walk_down_01",
+          "rect": [
+            80,
+            202,
+            73,
+            97
+          ],
+          "origin": [
+            36.5,
+            93
+          ]
+        },
+        {
+          "id": "walk_down_02",
+          "rect": [
+            153,
+            202,
+            72,
+            97
+          ],
+          "origin": [
+            36.0,
+            93
+          ]
+        },
+        {
+          "id": "walk_down_03",
+          "rect": [
+            227,
+            202,
+            71,
+            97
+          ],
+          "origin": [
+            35.5,
+            93
+          ]
+        },
+        {
+          "id": "walk_down_04",
+          "rect": [
+            300,
+            202,
+            77,
+            97
+          ],
+          "origin": [
+            38.5,
+            93
+          ]
+        },
+        {
+          "id": "walk_left_00",
+          "rect": [
+            379,
+            195,
+            71,
+            104
+          ],
+          "origin": [
+            35.5,
+            100
+          ]
+        },
+        {
+          "id": "walk_left_01",
+          "rect": [
+            450,
+            197,
+            73,
+            102
+          ],
+          "origin": [
+            36.5,
+            98
+          ]
+        },
+        {
+          "id": "walk_left_02",
+          "rect": [
+            523,
+            195,
+            72,
+            104
+          ],
+          "origin": [
+            36.0,
+            100
+          ]
+        },
+        {
+          "id": "walk_left_03",
+          "rect": [
+            596,
+            195,
+            74,
+            104
+          ],
+          "origin": [
+            37.0,
+            100
+          ]
+        },
+        {
+          "id": "walk_left_04",
+          "rect": [
+            671,
+            195,
+            73,
+            104
+          ],
+          "origin": [
+            36.5,
+            100
+          ]
+        },
+        {
+          "id": "walk_left_05",
+          "rect": [
+            745,
+            196,
+            68,
+            103
+          ],
+          "origin": [
+            34.0,
+            99
+          ]
+        },
+        {
+          "id": "walk_up_00",
+          "rect": [
+            814,
+            195,
+            72,
+            104
+          ],
+          "origin": [
+            36.0,
+            100
+          ]
+        },
+        {
+          "id": "walk_up_01",
+          "rect": [
+            886,
+            195,
+            70,
+            104
+          ],
+          "origin": [
+            35.0,
+            100
+          ]
+        },
+        {
+          "id": "walk_up_02",
+          "rect": [
+            957,
+            195,
+            69,
+            104
+          ],
+          "origin": [
+            34.5,
+            100
+          ]
+        },
+        {
+          "id": "walk_up_03",
+          "rect": [
+            1027,
+            195,
+            70,
+            104
+          ],
+          "origin": [
+            35.0,
+            100
+          ]
+        },
+        {
+          "id": "walk_up_04",
+          "rect": [
+            1098,
+            195,
+            72,
+            104
+          ],
+          "origin": [
+            36.0,
+            100
+          ]
+        },
+        {
+          "id": "walk_right_00",
+          "rect": [
+            1173,
+            196,
+            77,
+            103
+          ],
+          "origin": [
+            38.5,
+            99
+          ]
+        },
+        {
+          "id": "walk_right_01",
+          "rect": [
+            1250,
+            195,
+            74,
+            104
+          ],
+          "origin": [
+            37.0,
+            100
+          ]
+        },
+        {
+          "id": "walk_right_02",
+          "rect": [
+            1325,
+            195,
+            73,
+            104
+          ],
+          "origin": [
+            36.5,
+            100
+          ]
+        },
+        {
+          "id": "walk_right_03",
+          "rect": [
+            1399,
+            195,
+            75,
+            104
+          ],
+          "origin": [
+            37.5,
+            100
+          ]
+        },
+        {
+          "id": "walk_right_04",
+          "rect": [
+            1474,
+            195,
+            62,
+            104
+          ],
+          "origin": [
+            31.0,
+            100
+          ]
+        },
+        {
+          "id": "attack_00",
+          "rect": [
+            633,
+            539,
+            149,
+            120
+          ],
+          "origin": [
+            74.5,
+            116
+          ]
+        },
+        {
+          "id": "attack_01",
+          "rect": [
+            783,
+            543,
+            174,
+            116
+          ],
+          "origin": [
+            87.0,
+            112
+          ]
+        },
+        {
+          "id": "attack_02",
+          "rect": [
+            958,
+            543,
+            212,
+            116
+          ],
+          "origin": [
+            106.0,
+            112
+          ]
+        },
+        {
+          "id": "attack_03",
+          "rect": [
+            1172,
+            537,
+            211,
+            122
+          ],
+          "origin": [
+            105.5,
+            118
+          ]
+        },
+        {
+          "id": "attack_04",
+          "rect": [
+            1384,
+            537,
+            151,
+            122
+          ],
+          "origin": [
+            75.5,
+            118
+          ]
+        },
+        {
+          "id": "dodge_00",
+          "rect": [
+            7,
+            730,
+            108,
+            104
+          ],
+          "origin": [
+            54.0,
+            100
+          ]
+        },
+        {
+          "id": "dodge_01",
+          "rect": [
+            116,
+            733,
+            201,
+            101
+          ],
+          "origin": [
+            100.5,
+            97
+          ]
+        },
+        {
+          "id": "dodge_02",
+          "rect": [
+            318,
+            733,
+            211,
+            101
+          ],
+          "origin": [
+            105.5,
+            97
+          ]
+        },
+        {
+          "id": "dodge_03",
+          "rect": [
+            530,
+            733,
+            122,
+            101
+          ],
+          "origin": [
+            61.0,
+            97
+          ]
+        },
+        {
+          "id": "hit_00",
+          "rect": [
+            809,
+            723,
+            129,
+            110
+          ],
+          "origin": [
+            64.5,
+            106
+          ]
+        },
+        {
+          "id": "hit_01",
+          "rect": [
+            939,
+            720,
+            136,
+            113
+          ],
+          "origin": [
+            68.0,
+            109
+          ]
+        },
+        {
+          "id": "hit_02",
+          "rect": [
+            1076,
+            716,
+            146,
+            117
+          ],
+          "origin": [
+            73.0,
+            113
+          ]
+        },
+        {
+          "id": "victory_00",
+          "rect": [
+            572,
+            886,
+            90,
+            112
+          ],
+          "origin": [
+            45.0,
+            108
+          ]
+        },
+        {
+          "id": "victory_01",
+          "rect": [
+            663,
+            886,
+            145,
+            112
+          ],
+          "origin": [
+            72.5,
+            108
+          ]
+        },
+        {
+          "id": "victory_02",
+          "rect": [
+            808,
+            885,
+            106,
+            113
+          ],
+          "origin": [
+            53.0,
+            109
+          ]
+        }
+      ],
+      "animations": {
+        "idle_down": {
+          "frames": [
+            "idle_down_00"
+          ],
+          "fps": 1,
+          "loop": true
+        },
+        "idle_left": {
+          "frames": [
+            "idle_left_00"
+          ],
+          "fps": 1,
+          "loop": true
+        },
+        "idle_right": {
+          "frames": [
+            "idle_right_00"
+          ],
+          "fps": 1,
+          "loop": true
+        },
+        "idle_up": {
+          "frames": [
+            "idle_up_00"
+          ],
+          "fps": 1,
+          "loop": true
+        },
+        "walk_down": {
+          "frames": [
+            "walk_down_00",
+            "walk_down_01",
+            "walk_down_02",
+            "walk_down_03",
+            "walk_down_04"
+          ],
+          "fps": 8,
+          "loop": true
+        },
+        "walk_left": {
+          "frames": [
+            "walk_left_00",
+            "walk_left_01",
+            "walk_left_02",
+            "walk_left_03",
+            "walk_left_04",
+            "walk_left_05"
+          ],
+          "fps": 8,
+          "loop": true
+        },
+        "walk_up": {
+          "frames": [
+            "walk_up_00",
+            "walk_up_01",
+            "walk_up_02",
+            "walk_up_03",
+            "walk_up_04"
+          ],
+          "fps": 8,
+          "loop": true
+        },
+        "walk_right": {
+          "frames": [
+            "walk_right_00",
+            "walk_right_01",
+            "walk_right_02",
+            "walk_right_03",
+            "walk_right_04"
+          ],
+          "fps": 8,
+          "loop": true
+        },
+        "attack": {
+          "frames": [
+            "attack_00",
+            "attack_01",
+            "attack_02",
+            "attack_03",
+            "attack_04"
+          ],
+          "fps": 10,
+          "loop": false
+        },
+        "dodge": {
+          "frames": [
+            "dodge_00",
+            "dodge_01",
+            "dodge_02",
+            "dodge_03"
+          ],
+          "fps": 9,
+          "loop": false
+        },
+        "hit": {
+          "frames": [
+            "hit_00",
+            "hit_01",
+            "hit_02"
+          ],
+          "fps": 8,
+          "loop": false
+        },
+        "victory": {
+          "frames": [
+            "victory_00",
+            "victory_01",
+            "victory_02"
+          ],
+          "fps": 6,
+          "loop": true
+        }
+      },
+      "reviewNotes": "Folha RGB original: apenas preto de fundo conectado às bordas dos recortes é removido. Textos e divisores excluídos pelos recortes manuais.",
+      "removeBorderBlack": true
+    }
+  ]
+}

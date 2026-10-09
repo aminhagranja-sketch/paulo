@@ -16,6 +16,7 @@ SOURCES = {
     'enemies/snake': '15681c87-bdbc-446b-a3c2-c1d3853e999a.png',
     'enemies/fox': 'bef336d9-407a-4ad2-a747-f4ff3616e2ba.png',
     'characters/chicks': 'ca70ca01-1579-450b-9d26-5dd3eab5ecb5.png',
+    'characters/chicken': '5462a363-df7e-4da6-b2ce-1a715d75e117.png',
 }
 
 
@@ -121,15 +122,38 @@ def validate_entry(entry, image):
     return category
 
 
+def remove_border_black(crop, alpha_threshold=0):
+    """Remove only near-black background connected to crop edges; retain black eyes."""
+    width, height = crop.size
+    pixels = crop.load()
+    pending = [(x,y) for x in range(width) for y in (0,height-1)]
+    pending += [(x,y) for y in range(height) for x in (0,width-1)]
+    seen = set()
+    while pending:
+        x,y = pending.pop()
+        if (x,y) in seen or not (0 <= x < width and 0 <= y < height):
+            continue
+        seen.add((x,y))
+        r,g,b,a = pixels[x,y]
+        if alpha_threshold:
+            if a >= alpha_threshold:
+                continue
+        elif max(r,g,b) > 18:
+            continue
+        pixels[x,y] = (r,g,b,0)
+        pending.extend(((x-1,y),(x+1,y),(x,y-1),(x,y+1)))
+    return crop
+
+
 def pack(source_dir, manifest, assets, size=2048):
     if not 64 <= size <= 4096:
         raise ValueError('Tamanho do atlas deve estar entre 64 e 4096')
     document = json.loads(manifest.read_text(encoding='utf-8'))
     if document.get('version') != 1 or document.get('missing'):
-        raise ValueError('Manifesto incompleto: forneça as sete folhas e gere uma nova proposta')
+        raise ValueError('Manifesto incompleto: forneça todas as folhas do catálogo e gere uma nova proposta')
     entries = document['sheets']
     if len(entries) != len(SOURCES) or {e['category'] for e in entries} != set(SOURCES):
-        raise ValueError('São necessárias as sete categorias, sem duplicatas')
+        raise ValueError('São necessárias todas as categorias, sem duplicatas')
     prepared = []
     # Validate all inputs before writing any output.
     for entry in entries:
@@ -156,6 +180,10 @@ def pack(source_dir, manifest, assets, size=2048):
                 x = y = 2
                 row_height = 0
             crop = image.crop((sx, sy, sx+width, sy+height))
+            if entry.get('removeBorderBlack'):
+                crop = remove_border_black(crop)
+            elif entry.get('cleanBorderAlpha'):
+                crop = remove_border_black(crop, entry['cleanBorderAlpha'])
             # Paste without a mask preserves alpha exactly, including translucent fringes.
             atlas.paste(crop, (x, y))
             # Extrude edge pixels into padding to avoid linear-filter seams.

@@ -24,7 +24,7 @@ void Simulation::attack(Vec aim) {
                 e.pos=world.move(e.pos,normalized(delta)*22.f,e.boss?27.f:18.f);
                 e.brain=Brain::Recover; e.timer=.24f;
             } else if(!e.rewarded) {
-                e.rewarded=true; e.brain=Brain::Dead; ++player.kills;
+                e.rewarded=true; e.brain=Brain::Dead; e.timer=.65f; ++player.kills;
                 for(auto& drop:world.ensure(k).loot) if(drop.sourceEnemy==e.id) {
                     drop.spawned=true;
                     drop.pos=e.pos+Vec{drop.kind==LootKind::GoldenEgg?24.f:0.f,0};
@@ -50,7 +50,7 @@ void Simulation::collect() {
     }
 }
 bool Simulation::upgrade(int attribute) {
-    if(!atNest()) { notify("Volte ao ninho para comprar melhorias."); return false; }
+    if(!atNest() && !atShop()) { notify("Visite o ninho ou a loja para comprar melhorias."); return false; }
     if(attribute<0 || attribute>2) return false;
     int* target=attribute==0?&player.healthUp:attribute==1?&player.attackUp:&player.speedUp;
     int cost=30+*target*25;
@@ -70,7 +70,8 @@ void Simulation::hurt(float damage,Vec source) {
 }
 void Simulation::updateEnemies(float dt) {
     for(auto k:world.active()) for(auto& e:world.ensure(k).enemies) {
-        if(e.hp<=0 || distance(e.pos,player.pos)>900) continue;
+        if(e.hp<=0) {e.timer=std::max(0.f,e.timer-dt);continue;}
+        if(distance(e.pos,player.pos)>900) continue;
         if(e.boss && !player.readyForBoss()) { e.brain=Brain::Wander; continue; }
         if(atNest() && !e.boss) { e.brain=Brain::Wander; }
         e.timer-=dt; e.cooldown=std::max(0.f,e.cooldown-dt);
@@ -87,7 +88,7 @@ void Simulation::updateEnemies(float dt) {
         if(d<aggro && !atNest() && distance(e.pos,e.home)<650) {
             e.brain=Brain::Chase; e.aim=normalized(player.pos-e.pos);
             if(d<reach && e.cooldown<=0) { e.brain=Brain::Windup; e.timer=e.boss?.55f:.4f; }
-            else e.pos=world.move(e.pos,e.aim*(dt*(e.boss?155.f:95.f+e.tier*12)),e.boss?27.f:18.f);
+            else {const float speed=e.boss?155.f:(95.f+e.tier*12)*(e.species==Species::Fox?1.65f:e.species==Species::Snake?.75f:1.f);e.pos=world.move(e.pos,e.aim*(dt*speed),e.boss?27.f:18.f);}
         } else {
             e.brain=Brain::Wander;
             Vec target=e.home+Vec{std::cos(elapsed*.45f+e.id)*55,std::sin(elapsed*.31f+e.id)*55};
@@ -122,7 +123,8 @@ void Simulation::update(float dt,const Input& input) {
     if(input.interact) {
         if(atNest()) { player.hp=player.maxHp(); player.stamina=100; saveRequested=true;
             notify("Dona Cocó: descanse! 1: vida  2: ataque  3: velocidade. Explore, depois vença o Guardião.");
-        } else if(distance(player.pos,World::bossHome)<250 && !player.readyForBoss()) notify("O Guardião exige 6 ovos, 2 ovos de ouro e 5 rivais vencidos.");
+        } else if(atShop()) notify("Loja: equipamentos e melhorias para sua próxima aventura.");
+        else if(distance(player.pos,World::bossHome)<250 && !player.readyForBoss()) notify("O Guardião exige 6 ovos, 2 ovos de ouro e 5 rivais vencidos.");
         else notify("Colete aproximando-se dos itens. O ninho fica na marca azul do mapa.");
     }
     for(auto& e:effects) { e.life-=dt; e.pos+=e.velocity*dt; }

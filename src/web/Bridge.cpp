@@ -16,7 +16,7 @@ json state() {
     return {{"x",p.pos.x},{"y",p.pos.y},{"fx",p.facing.x},{"fy",p.facing.y},{"hp",p.hp},{"maxHp",p.maxHp()},{"stamina",p.stamina},
     {"level",p.level},{"xp",p.xp},{"nextXp",p.nextLevelXp()},{"coins",p.coins},{"eggs",p.eggs},{"gold",p.goldenEggs},{"food",p.food},{"kills",p.kills},
     {"healthUp",p.healthUp},{"attackUp",p.attackUp},{"speedUp",p.speedUp},{"bossDefeated",p.bossDefeated},{"moving",p.moving},{"walkTime",p.walkTime},
-    {"attack",p.attackVisual},{"dodge",p.dodgeTimer},{"invulnerable",p.invulnerable},{"atNest",game->atNest()},{"ready",p.readyForBoss()}};
+    {"attack",p.attackVisual},{"dodge",p.dodgeTimer},{"invulnerable",p.invulnerable},{"atNest",game->atNest()},{"atShop",game->atShop()},{"ready",p.readyForBoss()}};
 }
 }
 extern "C" {
@@ -42,7 +42,7 @@ EMSCRIPTEN_KEEPALIVE const char* game_snapshot(float width,float height) {
     for(auto k:game->world.active()) {
         auto& c=game->world.ensure(k);
         for(const auto& l:c.loot)if(!l.collected && l.spawned)j["loot"].push_back({l.pos.x,l.pos.y,int(l.kind)});
-        for(const auto& e:c.enemies)if(e.hp>0)j["enemies"].push_back({e.pos.x,e.pos.y,e.aim.x,e.aim.y,e.hp,e.maxHp,e.boss,int(e.brain),e.tier});
+        for(const auto& e:c.enemies)if(e.hp>0 || e.timer>0)j["enemies"].push_back({e.pos.x,e.pos.y,e.aim.x,e.aim.y,e.hp,e.maxHp,e.boss,int(e.brain),e.tier,int(e.species),e.timer,e.id});
     }
     for(const auto& e:game->effects)j["effects"].push_back({e.pos.x,e.pos.y,e.life/e.total,e.kind,e.text});
     j["controls"]={{"stick",{touch.stick.x,touch.stick.y}},{"knob",{touch.knob.x,touch.knob.y}},{"attack",{touch.attackButton.x,touch.attackButton.y}},{"dodge",{touch.dodgeButton.x,touch.dodgeButton.y}},{"eat",{touch.eatButton.x,touch.eatButton.y}},{"interact",{touch.interactButton.x,touch.interactButton.y}},{"radius",touch.radius},{"attacking",touch.attacking()}};

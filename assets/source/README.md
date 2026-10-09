@@ -1,7 +1,10 @@
-# Fontes originais
+# Fontes originais recebidas
 
-Coloque aqui os sete PNGs indicados em [SPRITES.md](../../docs/SPRITES.md).
-Eles ainda não foram recebidos como arquivos nesta sessão. A imagem da raposa
-exibida na conversa é uma referência visual, não um PNG local com transparência verificável.
+Os oito PNGs foram extraídos do arquivo enviado pelo usuário
+`novo jogo da galinha.rar` (9 de outubro de 2026).
+São as artes definitivas usadas na versão Web, incluindo a galinha adulta.
+Os arquivos originais permanecem intactos.
 
-Não recriar nem substituir essas artes. O pipeline preserva os arquivos de origem.
+As regiões, origens, sequências e SHA-256 estão em
+[review.json](../animations/review.json). Consulte [SPRITES.md](../../docs/SPRITES.md)
+para reproduzir os atlas e copiar as saídas ao site.
