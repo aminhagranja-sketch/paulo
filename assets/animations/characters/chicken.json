@@ -1,0 +1,884 @@
+{
+  "version": 1,
+  "source": "5462a363-df7e-4da6-b2ce-1a715d75e117.png",
+  "sha256": "5f82404880f3ea1de31ea7fec6a3905807957a74db99fd7c9bf6ed4666a91121",
+  "pages": [
+    "characters/chicken/atlas-0.png"
+  ],
+  "frames": {
+    "idle_right_00": {
+      "page": 0,
+      "rect": [
+        2,
+        2,
+        100,
+        141
+      ],
+      "sourceRect": [
+        281,
+        20,
+        100,
+        141
+      ],
+      "origin": [
+        50,
+        137
+      ]
+    },
+    "idle_left_00": {
+      "page": 0,
+      "rect": [
+        106,
+        2,
+        101,
+        140
+      ],
+      "sourceRect": [
+        911,
+        21,
+        101,
+        140
+      ],
+      "origin": [
+        50.5,
+        136
+      ]
+    },
+    "idle_up_00": {
+      "page": 0,
+      "rect": [
+        211,
+        2,
+        101,
+        139
+      ],
+      "sourceRect": [
+        783,
+        21,
+        101,
+        139
+      ],
+      "origin": [
+        50.5,
+        135
+      ]
+    },
+    "attack_03": {
+      "page": 0,
+      "rect": [
+        316,
+        2,
+        211,
+        122
+      ],
+      "sourceRect": [
+        1172,
+        537,
+        211,
+        122
+      ],
+      "origin": [
+        105.5,
+        118
+      ]
+    },
+    "attack_04": {
+      "page": 0,
+      "rect": [
+        531,
+        2,
+        151,
+        122
+      ],
+      "sourceRect": [
+        1384,
+        537,
+        151,
+        122
+      ],
+      "origin": [
+        75.5,
+        118
+      ]
+    },
+    "idle_down_00": {
+      "page": 0,
+      "rect": [
+        686,
+        2,
+        86,
+        122
+      ],
+      "sourceRect": [
+        47,
+        38,
+        86,
+        122
+      ],
+      "origin": [
+        43.0,
+        118
+      ]
+    },
+    "attack_00": {
+      "page": 0,
+      "rect": [
+        776,
+        2,
+        149,
+        120
+      ],
+      "sourceRect": [
+        633,
+        539,
+        149,
+        120
+      ],
+      "origin": [
+        74.5,
+        116
+      ]
+    },
+    "hit_02": {
+      "page": 0,
+      "rect": [
+        2,
+        147,
+        146,
+        117
+      ],
+      "sourceRect": [
+        1076,
+        716,
+        146,
+        117
+      ],
+      "origin": [
+        73.0,
+        113
+      ]
+    },
+    "attack_01": {
+      "page": 0,
+      "rect": [
+        152,
+        147,
+        174,
+        116
+      ],
+      "sourceRect": [
+        783,
+        543,
+        174,
+        116
+      ],
+      "origin": [
+        87.0,
+        112
+      ]
+    },
+    "attack_02": {
+      "page": 0,
+      "rect": [
+        330,
+        147,
+        212,
+        116
+      ],
+      "sourceRect": [
+        958,
+        543,
+        212,
+        116
+      ],
+      "origin": [
+        106.0,
+        112
+      ]
+    },
+    "hit_01": {
+      "page": 0,
+      "rect": [
+        546,
+        147,
+        136,
+        113
+      ],
+      "sourceRect": [
+        939,
+        720,
+        136,
+        113
+      ],
+      "origin": [
+        68.0,
+        109
+      ]
+    },
+    "victory_02": {
+      "page": 0,
+      "rect": [
+        686,
+        147,
+        106,
+        113
+      ],
+      "sourceRect": [
+        808,
+        885,
+        106,
+        113
+      ],
+      "origin": [
+        53.0,
+        109
+      ]
+    },
+    "victory_00": {
+      "page": 0,
+      "rect": [
+        796,
+        147,
+        90,
+        112
+      ],
+      "sourceRect": [
+        572,
+        886,
+        90,
+        112
+      ],
+      "origin": [
+        45.0,
+        108
+      ]
+    },
+    "victory_01": {
+      "page": 0,
+      "rect": [
+        2,
+        268,
+        145,
+        112
+      ],
+      "sourceRect": [
+        663,
+        886,
+        145,
+        112
+      ],
+      "origin": [
+        72.5,
+        108
+      ]
+    },
+    "hit_00": {
+      "page": 0,
+      "rect": [
+        151,
+        268,
+        129,
+        110
+      ],
+      "sourceRect": [
+        809,
+        723,
+        129,
+        110
+      ],
+      "origin": [
+        64.5,
+        106
+      ]
+    },
+    "dodge_00": {
+      "page": 0,
+      "rect": [
+        284,
+        268,
+        108,
+        104
+      ],
+      "sourceRect": [
+        7,
+        730,
+        108,
+        104
+      ],
+      "origin": [
+        54.0,
+        100
+      ]
+    },
+    "walk_left_00": {
+      "page": 0,
+      "rect": [
+        396,
+        268,
+        71,
+        104
+      ],
+      "sourceRect": [
+        379,
+        195,
+        71,
+        104
+      ],
+      "origin": [
+        35.5,
+        100
+      ]
+    },
+    "walk_left_02": {
+      "page": 0,
+      "rect": [
+        471,
+        268,
+        72,
+        104
+      ],
+      "sourceRect": [
+        523,
+        195,
+        72,
+        104
+      ],
+      "origin": [
+        36.0,
+        100
+      ]
+    },
+    "walk_left_03": {
+      "page": 0,
+      "rect": [
+        547,
+        268,
+        74,
+        104
+      ],
+      "sourceRect": [
+        596,
+        195,
+        74,
+        104
+      ],
+      "origin": [
+        37.0,
+        100
+      ]
+    },
+    "walk_left_04": {
+      "page": 0,
+      "rect": [
+        625,
+        268,
+        73,
+        104
+      ],
+      "sourceRect": [
+        671,
+        195,
+        73,
+        104
+      ],
+      "origin": [
+        36.5,
+        100
+      ]
+    },
+    "walk_right_01": {
+      "page": 0,
+      "rect": [
+        702,
+        268,
+        74,
+        104
+      ],
+      "sourceRect": [
+        1250,
+        195,
+        74,
+        104
+      ],
+      "origin": [
+        37.0,
+        100
+      ]
+    },
+    "walk_right_02": {
+      "page": 0,
+      "rect": [
+        780,
+        268,
+        73,
+        104
+      ],
+      "sourceRect": [
+        1325,
+        195,
+        73,
+        104
+      ],
+      "origin": [
+        36.5,
+        100
+      ]
+    },
+    "walk_right_03": {
+      "page": 0,
+      "rect": [
+        857,
+        268,
+        75,
+        104
+      ],
+      "sourceRect": [
+        1399,
+        195,
+        75,
+        104
+      ],
+      "origin": [
+        37.5,
+        100
+      ]
+    },
+    "walk_right_04": {
+      "page": 0,
+      "rect": [
+        936,
+        268,
+        62,
+        104
+      ],
+      "sourceRect": [
+        1474,
+        195,
+        62,
+        104
+      ],
+      "origin": [
+        31.0,
+        100
+      ]
+    },
+    "walk_up_00": {
+      "page": 0,
+      "rect": [
+        2,
+        384,
+        72,
+        104
+      ],
+      "sourceRect": [
+        814,
+        195,
+        72,
+        104
+      ],
+      "origin": [
+        36.0,
+        100
+      ]
+    },
+    "walk_up_01": {
+      "page": 0,
+      "rect": [
+        78,
+        384,
+        70,
+        104
+      ],
+      "sourceRect": [
+        886,
+        195,
+        70,
+        104
+      ],
+      "origin": [
+        35.0,
+        100
+      ]
+    },
+    "walk_up_02": {
+      "page": 0,
+      "rect": [
+        152,
+        384,
+        69,
+        104
+      ],
+      "sourceRect": [
+        957,
+        195,
+        69,
+        104
+      ],
+      "origin": [
+        34.5,
+        100
+      ]
+    },
+    "walk_up_03": {
+      "page": 0,
+      "rect": [
+        225,
+        384,
+        70,
+        104
+      ],
+      "sourceRect": [
+        1027,
+        195,
+        70,
+        104
+      ],
+      "origin": [
+        35.0,
+        100
+      ]
+    },
+    "walk_up_04": {
+      "page": 0,
+      "rect": [
+        299,
+        384,
+        72,
+        104
+      ],
+      "sourceRect": [
+        1098,
+        195,
+        72,
+        104
+      ],
+      "origin": [
+        36.0,
+        100
+      ]
+    },
+    "walk_left_05": {
+      "page": 0,
+      "rect": [
+        375,
+        384,
+        68,
+        103
+      ],
+      "sourceRect": [
+        745,
+        196,
+        68,
+        103
+      ],
+      "origin": [
+        34.0,
+        99
+      ]
+    },
+    "walk_right_00": {
+      "page": 0,
+      "rect": [
+        447,
+        384,
+        77,
+        103
+      ],
+      "sourceRect": [
+        1173,
+        196,
+        77,
+        103
+      ],
+      "origin": [
+        38.5,
+        99
+      ]
+    },
+    "walk_left_01": {
+      "page": 0,
+      "rect": [
+        528,
+        384,
+        73,
+        102
+      ],
+      "sourceRect": [
+        450,
+        197,
+        73,
+        102
+      ],
+      "origin": [
+        36.5,
+        98
+      ]
+    },
+    "dodge_01": {
+      "page": 0,
+      "rect": [
+        605,
+        384,
+        201,
+        101
+      ],
+      "sourceRect": [
+        116,
+        733,
+        201,
+        101
+      ],
+      "origin": [
+        100.5,
+        97
+      ]
+    },
+    "dodge_02": {
+      "page": 0,
+      "rect": [
+        810,
+        384,
+        211,
+        101
+      ],
+      "sourceRect": [
+        318,
+        733,
+        211,
+        101
+      ],
+      "origin": [
+        105.5,
+        97
+      ]
+    },
+    "dodge_03": {
+      "page": 0,
+      "rect": [
+        2,
+        492,
+        122,
+        101
+      ],
+      "sourceRect": [
+        530,
+        733,
+        122,
+        101
+      ],
+      "origin": [
+        61.0,
+        97
+      ]
+    },
+    "walk_down_00": {
+      "page": 0,
+      "rect": [
+        128,
+        492,
+        69,
+        97
+      ],
+      "sourceRect": [
+        9,
+        202,
+        69,
+        97
+      ],
+      "origin": [
+        34.5,
+        93
+      ]
+    },
+    "walk_down_01": {
+      "page": 0,
+      "rect": [
+        201,
+        492,
+        73,
+        97
+      ],
+      "sourceRect": [
+        80,
+        202,
+        73,
+        97
+      ],
+      "origin": [
+        36.5,
+        93
+      ]
+    },
+    "walk_down_02": {
+      "page": 0,
+      "rect": [
+        278,
+        492,
+        72,
+        97
+      ],
+      "sourceRect": [
+        153,
+        202,
+        72,
+        97
+      ],
+      "origin": [
+        36.0,
+        93
+      ]
+    },
+    "walk_down_03": {
+      "page": 0,
+      "rect": [
+        354,
+        492,
+        71,
+        97
+      ],
+      "sourceRect": [
+        227,
+        202,
+        71,
+        97
+      ],
+      "origin": [
+        35.5,
+        93
+      ]
+    },
+    "walk_down_04": {
+      "page": 0,
+      "rect": [
+        429,
+        492,
+        77,
+        97
+      ],
+      "sourceRect": [
+        300,
+        202,
+        77,
+        97
+      ],
+      "origin": [
+        38.5,
+        93
+      ]
+    }
+  },
+  "animations": {
+    "idle_down": {
+      "frames": [
+        "idle_down_00"
+      ],
+      "fps": 1,
+      "loop": true
+    },
+    "idle_left": {
+      "frames": [
+        "idle_left_00"
+      ],
+      "fps": 1,
+      "loop": true
+    },
+    "idle_right": {
+      "frames": [
+        "idle_right_00"
+      ],
+      "fps": 1,
+      "loop": true
+    },
+    "idle_up": {
+      "frames": [
+        "idle_up_00"
+      ],
+      "fps": 1,
+      "loop": true
+    },
+    "walk_down": {
+      "frames": [
+        "walk_down_00",
+        "walk_down_01",
+        "walk_down_02",
+        "walk_down_03",
+        "walk_down_04"
+      ],
+      "fps": 8,
+      "loop": true
+    },
+    "walk_left": {
+      "frames": [
+        "walk_left_00",
+        "walk_left_01",
+        "walk_left_02",
+        "walk_left_03",
+        "walk_left_04",
+        "walk_left_05"
+      ],
+      "fps": 8,
+      "loop": true
+    },
+    "walk_up": {
+      "frames": [
+        "walk_up_00",
+        "walk_up_01",
+        "walk_up_02",
+        "walk_up_03",
+        "walk_up_04"
+      ],
+      "fps": 8,
+      "loop": true
+    },
+    "walk_right": {
+      "frames": [
+        "walk_right_00",
+        "walk_right_01",
+        "walk_right_02",
+        "walk_right_03",
+        "walk_right_04"
+      ],
+      "fps": 8,
+      "loop": true
+    },
+    "attack": {
+      "frames": [
+        "attack_00",
+        "attack_01",
+        "attack_02",
+        "attack_03",
+        "attack_04"
+      ],
+      "fps": 10,
+      "loop": false
+    },
+    "dodge": {
+      "frames": [
+        "dodge_00",
+        "dodge_01",
+        "dodge_02",
+        "dodge_03"
+      ],
+      "fps": 9,
+      "loop": false
+    },
+    "hit": {
+      "frames": [
+        "hit_00",
+        "hit_01",
+        "hit_02"
+      ],
+      "fps": 8,
+      "loop": false
+    },
+    "victory": {
+      "frames": [
+        "victory_00",
+        "victory_01",
+        "victory_02"
+      ],
+      "fps": 6,
+      "loop": true
+    }
+  }
+}
