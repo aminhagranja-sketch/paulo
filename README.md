@@ -4,7 +4,35 @@ Jogo top-down em **C++20 + SFML 3.0.2**, com mundo procedural por chunks, combat
 
 ![Gameplay](docs/screenshots/gameplay.png)
 
-A direção visual segue a referência de Zelda enviada: composição vista de cima, cores rurais, volume por sombras, vegetação em camadas e ataques legíveis. A arte é original, desenhada proceduralmente em C++; não usa recursos de Zelda.
+A direção visual segue a referência de Zelda enviada: composição vista de cima, cores rurais, volume por sombras, vegetação em camadas e ataques legíveis. O cenário é original, desenhado proceduralmente. O personagem usa atlas preparados com imagegen a partir da referência de sprites enviada pelo usuário; não usa recursos de Zelda.
+
+## Jogar no celular e telas touch
+
+A pasta `web/` contém a versão de navegador, com o **mesmo núcleo de gameplay C++20 compilado em WebAssembly**, apresentação Canvas 2D e controles responsivos para Android, iPhone e computadores. Não é um APK nem um executável iOS.
+
+- Analógico esquerdo com zona morta e intensidade de movimento.
+- Botão **Bicar** à direita; mover e atacar simultaneamente com dois dedos.
+- Botões **Esquiva**, **Comer** e **Usar**, pausa e oficina acessíveis por toque.
+- Layout em retrato ou paisagem, captura/cancelamento de pointers e pausa ao perder foco.
+- Saves JSON no armazenamento local do navegador, separados do save Windows.
+- Render com DPR limitado a 1,5 para conter custo em telas de alta densidade.
+
+Para publicar no GitHub Pages, use a branch `gh-pages`, raiz `/`, em **Settings → Pages → Deploy from a branch**. O endereço esperado após ativar é `https://aminhagranja-sketch.github.io/paulo/`. A publicação precisa estar ativa antes de esse endereço funcionar.
+
+Para desenvolver localmente:
+
+```bash
+./scripts/bootstrap-web-cloud.sh # apenas na nuvem Debian; ou use em++ do emsdk
+python3 -m http.server 8088 --directory web
+```
+
+Abra o servidor local no navegador da sua máquina. Não abra `index.html` como arquivo: o navegador precisa buscar o módulo WASM por HTTP/HTTPS. A pasta web inclui os arquivos compilados e pode ser hospedada como site estático.
+
+Recompilar com emsdk: configure o núcleo para obter JSON e execute `GRANJA_JSON_INCLUDE=/caminho/para/nlohmann/include ./scripts/build-web.sh`. A versão validada de Emscripten é 3.1.69.
+
+Testes de navegador: `npm ci`, `npx playwright install chromium` e `npm run test:web` com o servidor em execução. O Playwright faz parte apenas da validação.
+
+No Windows, os controles virtuais também aceitam mouse e toque; **F2** exibe/oculta os controles. Como o SFML Win32 não fornece multitouch, `NativeTouch.cpp` adapta os eventos nativos `WM_POINTER` para o mesmo controlador. Esse caminho precisa de validação em equipamento Windows touch real.
 
 ## Jogar no Windows
 
@@ -66,7 +94,7 @@ Ataques custam energia e acertam um arco à frente. Inimigos anunciam o golpe co
 | E | Interagir; descansar e salvar no ninho |
 | U | Abrir oficina no ninho |
 | 1 / 2 / 3 | Comprar vida / ataque / velocidade, perto do ninho |
-| F1 | Guia de campo |
+| F1 / F2 | Guia de campo / mostrar controles touch |
 | F5 / F9 | Salvar / carregar |
 | Esc | Fechar painel ou pausar/retomar |
 
@@ -142,6 +170,6 @@ JSON versionado com seed, jogador, itens coletados e estado dos inimigos das ár
 
 Uma aventura solo completa até o chefe final, com um NPC de apoio, uma família de rivais com quatro níveis de força, três melhorias, quatro tipos de recompensa, um local secreto e terreno procedural. A interface usa coordenadas base 1920×1080 com letterboxing; a janela inicial é 1280×720. A simulação é fixa em 60 Hz e o render tem limite de 60 FPS, dependente do hardware.
 
-A apresentação é **2D vetorial**, com sprites construídos por formas e animação procedural. Não reproduz a renderização 3D/tilt-shift da imagem de referência. Esta versão não inclui áudio, multiplayer, gamepad, construção de fazenda ou campanhas adicionais.
+A apresentação combina cenário 2D vetorial e sprites PNG animados para Pipoca. Os atlas contêm caminhada em quatro direções, ataque, esquiva, dano e vitória; idle usa o primeiro quadro da direção. Não reproduz a renderização 3D/tilt-shift da imagem de referência. Esta versão não inclui áudio, multiplayer, gamepad, APK nativo, construção de fazenda ou campanhas adicionais.
 
 Código sob MIT; veja [licenças de terceiros](THIRD_PARTY.md).

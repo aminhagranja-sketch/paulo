@@ -49,3 +49,13 @@ Uma mudança nas regras de geração ou na identidade das entidades exige migrar
 - Áudio: um módulo de apresentação pode consumir eventos de gameplay sem contaminar o núcleo.
 
 Os números de balanceamento estão hoje nos structs e em `Simulation.cpp`. Extrair uma configuração de conteúdo JSON é uma evolução possível, com validação explícita e versão própria.
+
+## Toque e navegador (v1.1)
+
+`TouchControls` é um módulo C++ independente de SFML, compartilhado pelo desktop e WebAssembly. Cada pointer tem proprietário próprio; levantar o dedo de ataque mantém o analógico ativo. Há zona morta de 12%, intensidade analógica, raio limitado entre 40 e 76 pixels e reset ao redimensionar/cancelar. Botões secundários geram pulsos de um passo.
+
+`NativeTouch` adapta `WM_POINTER` em Windows, preserva o WndProc do SFML e evita promover os mesmos toques a cliques duplicados. Outros sistemas usam eventos SFML ou mouse. O backend Windows foi compilado, mas não validado em hardware touch.
+
+`src/web/Bridge.cpp` exporta o núcleo em WebAssembly. `web/app.js` recebe snapshots do estado, desenha no Canvas, converte Pointer Events em chamadas ao controlador C++ e salva JSON em localStorage usando o mesmo serializador do desktop. O WASM inclui colisões, IA, combate, progressão e geração; JavaScript cuida da apresentação e do ciclo de vida do navegador. Não há backend ou credenciais. O bundle estático é pré-compilado e versionado; execute `scripts/build-web.sh` após mudanças no núcleo.
+
+Os dois atlas têm grade 4×4. Caminhada: baixo, esquerda, cima, direita; ações: ataque, esquiva, dano, vitória. Ações laterais espelham para esquerda; caminhada usa cada direção. Os atlas derivados foram preparados por imagegen a partir da referência, e não recortados exatamente do original.

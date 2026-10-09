@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#203e32">
+<title>Meu Galinheiro • Aventura nos Campos</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<canvas id="game" aria-label="Mundo do jogo. Use o analógico à esquerda e Bicar à direita."></canvas>
+<header id="hud" hidden>
+ <div class="status"><span class="name">Pipoca <small id="level">NV. 1</small></span><div class="bar"><span id="health"></span></div><div class="energy"><span id="energy"></span></div><small id="stats"></small></div>
+ <div class="top-actions"><button id="quest" aria-label="Ver missão">Missão</button><button id="pause" aria-label="Pausar"><span class="pause-icon" aria-hidden="true"></span></button></div>
+</header>
+<aside id="objectives" hidden><strong>O desafio do Guardião</strong><p id="questText"></p><small>Azul: ninho · dourado: Guardião</small></aside>
+<div id="message" role="status"></div>
+<div id="modal" class="overlay"><section class="card">
+ <div class="eyebrow">UMA AVENTURA PELOS CAMPOS</div><h1>Meu<br>Galinheiro</h1>
+ <p id="menuText">Mova com o analógico esquerdo.<br>Bique com o botão direito.</p>
+ <button id="start" class="primary" disabled>Preparando aventura…</button>
+ <button id="new" hidden>Nova aventura</button>
+ <div class="menu-row"><button id="save" hidden>Salvar</button><button id="fullscreen">Tela cheia</button><button id="help">Guia</button></div>
+ <small id="saveStatus">Progresso salvo neste navegador.</small>
+</section></div>
+<div id="workshop" class="overlay" hidden><section class="card"><div class="eyebrow">DONA COCÓ</div><h2>Oficina do ninho</h2><p id="wallet"></p><button data-upgrade="0"></button><button data-upgrade="1"></button><button data-upgrade="2"></button><button id="leaveWorkshop" class="primary">Voltar aos campos</button></section></div>
+<div id="guide" class="overlay" hidden><section class="card"><h2>Guia de campo</h2><p>Analógico esquerdo: mover.<br><b>Bicar:</b> atacar na direção atual.<br><b>Esquiva:</b> evitar golpes.<br><b>Comer:</b> recuperar vida.<br><b>Usar:</b> descansar e comprar melhorias no ninho.</p><p>Colete 6 ovos, 2 ovos de ouro e vença 5 rivais. Encontre o Guardião na marca dourada. Círculos vermelhos anunciam golpes.</p><p>No computador: WASD, Espaço, Shift, Q e E.</p><button id="closeGuide" class="primary">Entendi</button></section></div>
+<script src="granja.js"></script><script type="module" src="app.js"></script>
+</body></html>

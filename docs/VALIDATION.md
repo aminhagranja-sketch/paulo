@@ -5,7 +5,10 @@ Validação realizada no ambiente Debian 13 x86_64 deste projeto em 9 de outubro
 ## Executado com sucesso
 
 - Compilação Release de `meu_galinheiro` e `granja_tests` com GCC 14.2, CMake 3.31.6, SFML 3.0.2 e JSON 3.12.0.
-- **16 testes de gameplay**, executados por `granja_tests` e registrados como um alvo no CTest:
+- **19 testes de gameplay**, executados por `granja_tests` e registrados como um alvo no CTest:
+  - ownership multitouch independente para analógico e ataque;
+  - cancelamento, zona morta, pulsos e resize do controlador;
+  - velocidade proporcional à intensidade do analógico;
   - seed, terreno e recompensas determinísticos;
   - coordenadas negativas e exatamente nove chunks ativos;
   - descarregamento e restauração dos itens coletados;
@@ -48,3 +51,9 @@ No Windows com Visual Studio 2022:
 ```
 
 Os testes gráficos usam saves temporários separados do progresso real. O runner sai com código diferente de zero se movimento, recompensa, recarga ou captura falharem.
+
+## Validação móvel (v1.1)
+
+Núcleo compilado com Emscripten 3.1.69, com exceções C++ e filesystem em memória. Teste Chromium via Playwright com touch emulado, viewports 844×390 e 390×844: movimento e ataque com dois dedos simultâneos, liberação independente, cancelamento, pausa, recarga do save local, rotação, cura pelo botão Comer e interação/compra na oficina sem teclado passaram. Sem erros JavaScript/WASM registrados. Capturas em `docs/screenshots/mobile-landscape.png` e `mobile-portrait.png`.
+
+Não foram realizados testes em telefone Android/iPhone físico, Safari móvel ou tela Windows touch. O backend nativo `WM_POINTER` compila no alvo Windows x64, mas ainda precisa ser exercitado nesses dispositivos. Não há APK/iOS nativo nem promessa de FPS em todo aparelho. A hospedagem estática depende de ativar o GitHub Pages no repositório.

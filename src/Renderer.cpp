@@ -9,6 +9,10 @@ sf::Color alpha(sf::Color c,unsigned a) {c.a=static_cast<std::uint8_t>(a);return
 sf::String utf8(const std::string& s) {return sf::String::fromUtf8(s.begin(),s.end());}
 }
 Renderer::Renderer(const std::filesystem::path& assets) {
+    if(!playerAtlas.loadFromFile(assets/"sprites"/"chicken-walk.png")) throw std::runtime_error("Atlas do personagem ausente.");
+    playerAtlas.setSmooth(true);
+    hasActions=actionAtlas.loadFromFile(assets/"sprites"/"chicken-actions.png");
+    if(hasActions) actionAtlas.setSmooth(true);
     if(!font.openFromFile(assets/"fonts"/"DejaVuSans.ttf")) throw std::runtime_error("Fonte ausente. Execute junto da pasta assets ou use --assets.");
 }
 sf::View Renderer::uiView(sf::Vector2u size) {
@@ -72,6 +76,37 @@ void Renderer::chicken(Vec p,Vec facing,sf::Color body,float t,float scale,bool 
         polygon({q(-14,-47),q(-16,-61),q(-7,-55),q(0,-68),q(8,-55),q(17,-61),q(14,-47)},Gold);
         line(q(-14,-47),q(14,-47),4*scale,{166,113,35});ellipse(0,-51,3,3,{201,51,73});
     }
+}
+void Renderer::playerSprite(const Player& p,float time,float size) {
+    int direction=std::abs(p.facing.x)>std::abs(p.facing.y)?(p.facing.x<0?1:3):(p.facing.y<0?2:0);
+    int frame=p.moving?int(p.walkTime*(p.dodgeTimer>0?20:9))%4:0;
+    sf::Texture* texture=&playerAtlas;
+    bool flip=false;int row=direction;
+    if(hasActions && (p.attackVisual>0 || p.dodgeTimer>0 || p.invulnerable>.3f || (p.bossDefeated && !p.moving))) {
+        texture=&actionAtlas;flip=p.facing.x<0;
+        row=p.attackVisual>0?0:p.dodgeTimer>0?1:p.invulnerable>.3f?2:3;
+        frame=p.attackVisual>0?std::min(3,int((.18f-p.attackVisual)/.18f*4)):int(time*14)%4;
+    }
+    int cw=int(texture->getSize().x/4),ch=int(texture->getSize().y/4);
+    sf::Sprite sprite(*texture,sf::IntRect({frame*cw,row*ch},{cw,ch}));
+    sprite.setOrigin({cw*.5f,ch*.94f});float scale=size/ch;
+    sprite.setScale({flip?-scale:scale,scale});sprite.setPosition({p.pos.x,p.pos.y+12});
+    oval(p.pos+Vec{3,8},{22,9},{24,45,29,85});
+    if(p.invulnerable>0 && int(time*16)%2==0) sprite.setColor({255,215,175,180});
+    out->draw(sprite);
+}
+void Renderer::touchHud(const TouchControls& touch) {
+    float r=touch.radius;
+    oval(touch.stick,{r,r},{17,34,40,130});oval(touch.stick,{r*.76f,r*.76f},{105,157,133,55});
+    oval(touch.knob,{r*.44f,r*.44f},{214,234,208,190});
+    auto button=[&](Vec pos,float size,const char* label,bool active){
+        oval(pos,{size,size},active?sf::Color{226,161,60,230}:sf::Color{24,44,44,195});
+        oval(pos,{size-3,size-3},active?sf::Color{238,179,77,230}:sf::Color{70,106,89,180});
+        text(label,pos+Vec{0,-8},size>50?16:11,Cream,true);
+    };
+    button(touch.attackButton,r*.85f,"BICAR",touch.attacking());
+    button(touch.dodgeButton,r*.56f,"ESQUIVA",false);button(touch.eatButton,r*.56f,"COMER",false);
+    button(touch.interactButton,r*.56f,"USAR",false);
 }
 void Renderer::tree(Vec p,std::uint32_t h,float time) {
     float shift=std::sin(time*.7f+float(h%100))*.7f;
@@ -204,8 +239,7 @@ void Renderer::scenery(const Simulation& s,Vec camera) {
     objects.push_back({215,[&]{chicken({86,215},{.7f,-.2f},{227,205,143},s.elapsed,1.05f);text("Dona Cocó",{86,161},12,Cream,true);}});
     objects.push_back({s.player.pos.y,[&]{
         if(s.player.dodgeTimer>0) {oval(s.player.pos-s.player.dodgeDirection*20,{24,15},{252,240,197,70});}
-        sf::Color body=s.player.invulnerable>0 && int(s.elapsed*16)%2==0?sf::Color{255,221,130}:Cream;
-        chicken(s.player.pos,s.player.facing,body,s.elapsed,1,s.player.dodgeTimer>0 || distance(s.player.pos,camera)>2);
+        playerSprite(s.player,s.elapsed);
         if(s.player.attackVisual>0) {
             float base=std::atan2(s.player.facing.y,s.player.facing.x);
             for(int i=0;i<10;++i) {
@@ -223,10 +257,10 @@ void Renderer::scenery(const Simulation& s,Vec camera) {
     }
     if(s.atNest()) text("E  descansar   •   U  melhorias",World::nest+Vec{0,99},13,Cream,true);
 }
-void Renderer::hud(const Simulation& s,bool upgradeOpen) {
+void Renderer::hud(const Simulation& s,bool upgradeOpen,bool touchMode) {
     const auto& p=s.player;
     panel({32,30},{440,178});
-    chicken({86,105},{1,0},Cream,s.elapsed,.95f);
+    Player portrait=p;portrait.pos={86,105};portrait.facing={1,0};portrait.moving=false;portrait.attackVisual=portrait.dodgeTimer=portrait.invulnerable=0;playerSprite(portrait,s.elapsed,66);
     text("Pipoca",{136,48},27,Cream);text("GALINHA AVENTUREIRA",{136,86},12,Muted);
     text("NV. "+std::to_string(p.level),{364,54},21,Gold);
     bar({136,115},{294,17},p.hp/p.maxHp(),{232,106,93});
@@ -250,13 +284,16 @@ void Renderer::hud(const Simulation& s,bool upgradeOpen) {
     auto marker=[&](Vec point,sf::Color c){Vec offset=(point-p.pos)*(unit/64);offset.x=std::clamp(offset.x,-98.f,98.f);offset.y=std::clamp(offset.y,-98.f,98.f);oval(middle+offset,{5,5},Ink);oval(middle+offset,{3.5,3.5},c);};
     marker(World::nest,{123,208,255});marker(World::bossHome,Gold);marker(p.pos,Cream);
     text("● Ninho   ● Guardião",{1660,291},11,Muted);
-    panel({32,800},{365,166});
-    text(p.bossDefeated?"AVENTURA CONCLUÍDA":"O DESAFIO DO GUARDIÃO",{52,817},15,Gold);
+    float questY=touchMode?232.f:800.f;
+    panel({32,questY},{365,166});
+    text(p.bossDefeated?"AVENTURA CONCLUÍDA":"O DESAFIO DO GUARDIÃO",{52,questY+17},15,Gold);
     auto objective=[&](const std::string& name,int count,int needed,float y){bool done=count>=needed;text(done?"✓":"○",{52,y},20,done?Mint:Muted);text(name,{83,y+2},18,Cream);text(std::to_string(std::min(count,needed))+" / "+std::to_string(needed),{312,y+2},17,done?Mint:Muted);};
-    objective("Ovos",p.eggs,6,852);objective("Ovos de ouro",p.goldenEggs,2,887);objective("Rivais vencidos",p.kills,5,922);
+    objective("Ovos",p.eggs,6,questY+52);objective("Ovos de ouro",p.goldenEggs,2,questY+87);objective("Rivais vencidos",p.kills,5,questY+122);
+    if(!touchMode) {
     panel({32,994},{1856,55});
     text("WASD  mover     ESPAÇO / CLIQUE  bicar     SHIFT  esquivar     Q  comer     E  interagir     U  melhorias",{56,1011},17,Cream);
-    text("F1 ajuda   F5 salvar   ESC pausa",{1506,1012},14,Muted);
+    text("F1 ajuda   F5 salvar   F2 toque   ESC pausa",{1450,1012},14,Muted);
+    }
     if(s.messageTimer>0) {
         panel({465,904},{1133,60});text(s.message,{490,924},15,Cream);
     } else if(p.readyForBoss() && !p.bossDefeated) {
@@ -274,19 +311,25 @@ void Renderer::hud(const Simulation& s,bool upgradeOpen) {
         text("Moedas: "+std::to_string(p.coins)+"     •     U / ESC para voltar",{960,755},18,Gold,true);
     }
 }
-void Renderer::draw(sf::RenderWindow& window,const Simulation& s,Vec camera,int screen,bool help,bool upgradeOpen) {
+void Renderer::draw(sf::RenderWindow& window,const Simulation& s,Vec camera,int screen,bool help,bool upgradeOpen,const TouchControls* touch) {
     out=&window;window.clear({13,27,33});window.setView(worldView(window.getSize(),camera));
     terrain(s,camera);scenery(s,camera);
     // Six-minute day cycle; dusk tint is subtle enough to keep the map readable.
     float dusk=std::max(0.f,std::sin(s.elapsed/360.f*6.28318f));
     rect(camera-Vec{760,450},{1520,900},{37,43,89,std::uint8_t(dusk*35)});
-    window.setView(uiView(window.getSize()));hud(s,upgradeOpen);
+    window.setView(uiView(window.getSize()));hud(s,upgradeOpen,touch && touch->visible);
+    if(touch && touch->visible) {
+        window.setView(window.getDefaultView());touchHud(*touch);
+        rect({float(window.getSize().x)-58,12},{46,40},{21,39,38,215});
+        text("II",{float(window.getSize().x)-44,20},20,Cream);
+        window.setView(uiView(window.getSize()));
+    }
     if(screen==0) {
         rect({0,0},{1920,1080},{9,28,31,170});panel({390,150},{1140,780});
         text("UMA AVENTURA PELOS CAMPOS",{960,204},17,Gold,true);
         text("MEU GALINHEIRO",{960,262},67,Cream,true);
         text("O MUNDO É GRANDE. SUA CORAGEM TAMBÉM.",{960,355},18,Muted,true);
-        chicken({960,520},{1,.1f},Cream,s.elapsed,3.3f,false);
+        Player hero=s.player;hero.pos={960,630};hero.facing={1,0};hero.moving=false;hero.attackVisual=hero.dodgeTimer=hero.invulnerable=0;playerSprite(hero,s.elapsed,235);
         text("Explore. Colete. Evolua. Desafie o Guardião.",{960,654},24,Cream,true);
         text("ENTER   iniciar / continuar",{960,730},24,Gold,true);
         text("N   nova aventura     •     ESC   sair",{960,782},18,Muted,true);

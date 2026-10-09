@@ -6,3 +6,4 @@
 *.log
 screenshot.png
 /dist/
+/node_modules/

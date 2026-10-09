@@ -97,16 +97,19 @@ void Simulation::update(float dt,const Input& input) {
     player.attackCooldown=std::max(0.f,player.attackCooldown-dt);
     player.attackVisual=std::max(0.f,player.attackVisual-dt);
     player.stamina=std::min(100.f,player.stamina+dt*25);
-    Vec direction=length(input.move)>.01f?normalized(input.move):Vec{};
+    Vec direction=length(input.move)>.01f?input.move*(1.f/std::max(1.f,length(input.move))):Vec{};
     if(length(input.aim)>.01f) player.facing=normalized(input.aim);
-    else if(length(direction)>.01f) player.facing=direction;
+    else if(length(direction)>.01f) player.facing=normalized(direction);
     if(input.dodge && player.stamina>=30 && player.dodgeTimer<=0) {
         player.stamina-=30; player.dodgeTimer=.2f; player.invulnerable=.25f;
-        player.dodgeDirection=length(direction)>.01f?direction:player.facing;
+        player.dodgeDirection=length(direction)>.01f?normalized(direction):player.facing;
     }
     if(player.dodgeTimer>0) {
         player.pos=world.move(player.pos,player.dodgeDirection*(dt*620),PlayerRadius); player.dodgeTimer-=dt;
     } else player.pos=world.move(player.pos,direction*(player.speed()*dt),PlayerRadius);
+    player.moving=length(direction)>.01f || player.dodgeTimer>0;
+    if(player.moving) player.walkTime+=dt;
+    else player.walkTime=0;
     world.stream(player.pos);
     if(input.attack) attack(player.facing);
     if(input.eat && player.food>0 && player.hp<player.maxHp()) { --player.food; player.hp=std::min(player.maxHp(),player.hp+45); effect(player.pos,3,"+45 vida"); }

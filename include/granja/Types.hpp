@@ -37,7 +37,7 @@ struct ChunkRecord { std::vector<int> collected; std::vector<EnemyRecord> enemie
 struct Chunk { ChunkKey key{}; std::vector<Loot> loot; std::vector<Enemy> enemies; };
 struct Player {
     Vec pos{160,160}, facing{1,0}; float hp{100},stamina{100},invulnerable{},attackCooldown{},attackVisual{},dodgeTimer{};
-    Vec dodgeDirection{1,0}; int level{1},xp{},coins{},eggs{},goldenEggs{},food{3},kills{},healthUp{},attackUp{},speedUp{},deaths{};
+    Vec dodgeDirection{1,0}; float walkTime{}; bool moving{}; int level{1},xp{},coins{},eggs{},goldenEggs{},food{3},kills{},healthUp{},attackUp{},speedUp{},deaths{};
     bool bossDefeated{};
     float maxHp() const { return 100.f+(level-1)*12.f+healthUp*25.f; }
     float damage() const { return 24.f+(level-1)*4.f+attackUp*8.f; }

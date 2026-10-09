@@ -1,0 +1,68 @@
+const {chromium}=require('playwright');
+const assert=require('node:assert/strict');
+const fs=require('node:fs');
+let browser;
+(async()=>{
+ browser=await chromium.launch({executablePath:process.env.CHROMIUM_PATH||(fs.existsSync('/usr/bin/chromium')?'/usr/bin/chromium':chromium.executablePath()),headless:true,args:['--no-sandbox']});
+ const context=await browser.newContext({viewport:{width:844,height:390},hasTouch:true,isMobile:true,deviceScaleFactor:2});
+ const page=await context.newPage();const errors=[];page.on('pageerror',e=>errors.push(e.message));
+ await page.goto(process.env.GRANJA_WEB_URL||'http://127.0.0.1:8088',{waitUntil:'networkidle'});
+ await page.waitForFunction(()=>window.granjaDebug?.state);
+ await page.locator('#start').click();
+ const before=await page.evaluate(()=>window.granjaDebug.state.player.x);
+ const controls=await page.evaluate(()=>window.granjaDebug.state.controls);
+ const cdp=await context.newCDPSession(page);
+ const finger=(id,x,y)=>({id,x,y,radiusX:10,radiusY:10,force:1});
+ const joy=controls.stick,atk=controls.attack,r=controls.radius;
+ await cdp.send('Input.dispatchTouchEvent',{type:'touchStart',touchPoints:[finger(1,...joy)]});
+ await cdp.send('Input.dispatchTouchEvent',{type:'touchMove',touchPoints:[finger(1,joy[0]+r,joy[1])]});
+ await cdp.send('Input.dispatchTouchEvent',{type:'touchStart',touchPoints:[finger(1,joy[0]+r,joy[1]),finger(2,...atk)]});
+ await page.waitForTimeout(900);
+ let p=await page.evaluate(()=>window.granjaDebug.state.player);
+ assert(p.x>before+30,'Joystick failed to move player');
+ assert(p.stamina<98,'Attack finger did not consume stamina while moving');
+ assert.equal(await page.evaluate(()=>window.granjaDebug.state.controls.attacking),true);
+ await cdp.send('Input.dispatchTouchEvent',{type:'touchEnd',touchPoints:[finger(2,...atk)]});
+ await page.waitForFunction(()=>window.granjaDebug.state.controls.attacking===false);
+ await cdp.send('Input.dispatchTouchEvent',{type:'touchEnd',touchPoints:[]});
+ await page.waitForTimeout(100);
+ const stopped=await page.evaluate(()=>window.granjaDebug.state.player.x);
+ await page.waitForTimeout(200);assert.equal(await page.evaluate(()=>window.granjaDebug.state.player.x),stopped,'Movement stuck after lifting finger');
+ // Cancellation clears held inputs.
+ await cdp.send('Input.dispatchTouchEvent',{type:'touchStart',touchPoints:[finger(3,...joy)]});
+ await cdp.send('Input.dispatchTouchEvent',{type:'touchMove',touchPoints:[finger(3,joy[0]-r,joy[1])]});
+ await cdp.send('Input.dispatchTouchEvent',{type:'touchCancel',touchPoints:[]});
+ await page.waitForTimeout(80);
+ assert.deepEqual(await page.evaluate(()=>window.granjaDebug.state.controls.knob),joy,'Cancelled joystick was retained');
+ // Pause freezes simulation and reload restores the saved C++ state.
+ await page.locator('#pause').click();const saved=await page.evaluate(()=>window.granjaDebug.state.player.x);
+ await page.waitForTimeout(150);assert.equal(await page.evaluate(()=>window.granjaDebug.state.player.x),saved);
+ await page.reload({waitUntil:'networkidle'});await page.waitForFunction(()=>window.granjaDebug?.state);
+ assert.equal(await page.locator('#start').textContent(),'Continuar aventura');
+ assert(Math.abs(await page.evaluate(()=>window.granjaDebug.state.player.x)-saved)<.01,'localStorage reload lost state');
+ await page.locator('#start').click();
+ await page.setViewportSize({width:390,height:844});await page.waitForTimeout(150);
+ let s=await page.evaluate(()=>window.granjaDebug.state);
+ assert(s.controls.stick[0]<195&&s.controls.attack[0]>195,'Portrait control sides incorrect');
+ assert(s.controls.attack[1]<844&&s.controls.stick[1]>600,'Controls outside portrait viewport');
+ // Actual eat button and C++ healing path, using a valid edited save fixture.
+ await page.evaluate(()=>{const d=window.granjaDebug,m=d.module;const save=JSON.parse(m.UTF8ToString(m._game_save()));save.player.hp=30;save.player.food=3;m.ccall('game_load','number',['string'],[JSON.stringify(save)]);});
+ await page.waitForTimeout(70);s=await page.evaluate(()=>window.granjaDebug.state);
+ await cdp.send('Input.dispatchTouchEvent',{type:'touchStart',touchPoints:[finger(5,...s.controls.eat)]});
+ await cdp.send('Input.dispatchTouchEvent',{type:'touchEnd',touchPoints:[]});await page.waitForTimeout(100);
+ p=await page.evaluate(()=>window.granjaDebug.state.player);assert(p.hp===75&&p.food===2,'Food touch button failed');
+ // Workshop must be reachable with touch alone.
+ await page.evaluate(()=>{const m=window.granjaDebug.module;const save=JSON.parse(m.UTF8ToString(m._game_save()));save.player.pos=[160,160];save.player.hp=40;save.player.coins=100;save.player.attackUp=0;m.ccall('game_load','number',['string'],[JSON.stringify(save)]);});
+ await page.waitForTimeout(80);s=await page.evaluate(()=>window.granjaDebug.state);
+ await cdp.send('Input.dispatchTouchEvent',{type:'touchStart',touchPoints:[finger(6,...s.controls.interact)]});
+ await cdp.send('Input.dispatchTouchEvent',{type:'touchEnd',touchPoints:[]});
+ await page.locator('#workshop').waitFor({state:'visible'});
+ await page.locator('[data-upgrade="1"]').click();
+ p=await page.evaluate(()=>window.granjaDebug.state.player);assert.equal(p.attackUp,1);assert.equal(p.coins,70);assert.equal(p.hp,p.maxHp);
+ await page.locator('#leaveWorkshop').click();await page.waitForTimeout(80);
+ fs.mkdirSync('build/validation/mobile',{recursive:true});await page.screenshot({path:'build/validation/mobile/portrait.png'});
+ await page.setViewportSize({width:844,height:390});await page.waitForTimeout(120);await page.screenshot({path:'build/validation/mobile/landscape.png'});
+ assert.deepEqual(errors,[],'Browser reported JavaScript/WASM errors');
+ console.log('PASS browser: two simultaneous fingers, attack + move, release, cancellation, pause, save reload, portrait/landscape, food, touch workshop, rendering.');
+ await browser.close();
+})().catch(async e=>{console.error(e);if(browser)await browser.close();process.exit(1);});

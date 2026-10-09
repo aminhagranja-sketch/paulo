@@ -21,3 +21,19 @@ jobs:
       - run: cmake --preset linux && cmake --build --preset linux --parallel 4 && ctest --preset linux
       - name: Graphical smoke test
         run: mkdir -p build/validation && xvfb-run -a build/linux/meu_galinheiro --smoke --save build/validation/save.json
+  browser:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: npm
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - name: Mobile browser integration
+        run: |
+          python3 -m http.server 8088 --bind 127.0.0.1 --directory web > /tmp/granja-web-server.log 2>&1 &
+          server_pid=$!
+          trap 'kill "$server_pid" 2>/dev/null || true; wait "$server_pid" 2>/dev/null || true' EXIT
+          npm run test:web
