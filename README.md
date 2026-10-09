@@ -12,7 +12,9 @@ A pasta `web/` contém a versão de navegador, com o **mesmo núcleo de gameplay
 
 - Analógico esquerdo com zona morta e intensidade de movimento.
 - Botão **Bicar** à direita; mover e atacar simultaneamente com dois dedos.
-- Botões **Esquiva**, **Comer** e **Usar**, pausa e oficina acessíveis por toque.
+- Botões **Esquiva**, **Comer** e **Usar**, pausa, oficina e **Bolsa** acessíveis por toque.
+- Inventário Web pela tecla **I**, com quantidades e uso de alimentos.
+- Ovos comuns e dourados aparecem somente após derrotar inimigos; drops e coleta persistem no save.
 - Layout em retrato ou paisagem, captura/cancelamento de pointers e pausa ao perder foco.
 - Saves JSON no armazenamento local do navegador, separados do save Windows.
 - Render com DPR limitado a 1,5 para conter custo em telas de alta densidade.
@@ -33,6 +35,17 @@ Recompilar com emsdk: configure o núcleo para obter JSON e execute `GRANJA_JSON
 Testes de navegador: `npm ci`, `npx playwright install chromium` e `npm run test:web` com o servidor em execução. O Playwright faz parte apenas da validação.
 
 No Windows, os controles virtuais também aceitam mouse e toque; **F2** exibe/oculta os controles. Como o SFML Win32 não fornece multitouch, `NativeTouch.cpp` adapta os eventos nativos `WM_POINTER` para o mesmo controlador. Esse caminho precisa de validação em equipamento Windows touch real.
+
+## Evolução para o pedido multiplayer
+
+O processamento das sete folhas está documentado em [SPRITES.md](docs/SPRITES.md).
+A nova regra de ovos e o inventário Web já funcionam. Saves v1 são migrados para
+v2 preservando inventário; ovos antigos espalhados pelo mapa foram removidos.
+
+A versão atual ainda é individual, com Canvas 2D e salvamento local. Servidor
+autoritativo, cooperação, PostgreSQL, câmera Babylon 2.5D, portas animadas e
+integração das sete folhas originais permanecem pendentes. As imagens exibidas
+na conversa ainda não estão disponíveis como PNGs locais verificáveis.
 
 ## Jogar no Windows
 

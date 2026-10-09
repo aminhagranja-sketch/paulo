@@ -33,7 +33,7 @@ std::filesystem::path Save::defaultPath() {
 bool Save::write(const Simulation& s,const std::filesystem::path& path,std::string& error) {
     try {
         const auto& p=s.player;
-        json j={{"version",1},{"seed",s.world.seed()},{"elapsed",s.elapsed}};
+        json j={{"version",2},{"seed",s.world.seed()},{"elapsed",s.elapsed}};
         j["player"]={{"pos",vectorJson(p.pos)},{"facing",vectorJson(p.facing)},{"hp",p.hp},{"stamina",p.stamina},
             {"level",p.level},{"xp",p.xp},{"coins",p.coins},{"eggs",p.eggs},{"goldenEggs",p.goldenEggs},{"food",p.food},
             {"kills",p.kills},{"healthUp",p.healthUp},{"attackUp",p.attackUp},{"speedUp",p.speedUp},{"deaths",p.deaths},{"bossDefeated",p.bossDefeated}};
@@ -60,7 +60,8 @@ bool Save::read(Simulation& s,const std::filesystem::path& path,std::string& err
         if(std::filesystem::file_size(path)>32*1024*1024) throw std::runtime_error("Save excede 32 MB");
         std::ifstream stream(path,std::ios::binary); if(!stream) throw std::runtime_error("Save indisponível");
         json j; stream>>j;
-        if(j.at("version").get<int>()!=1) throw std::runtime_error("Versão de save incompatível");
+        const int version=j.at("version").get<int>();
+        if(version!=1 && version!=2) throw std::runtime_error("Versão de save incompatível");
         Simulation candidate(j.at("seed").get<std::uint32_t>()); const auto& v=j.at("player"); auto& p=candidate.player;
         p.pos=readVec(v.at("pos")); p.facing=normalized(readVec(v.at("facing")));
         p.level=boundedInt(v,"level",1,10000); p.xp=boundedInt(v,"xp",0,p.nextLevelXp()-1);
@@ -82,7 +83,7 @@ bool Save::read(Simulation& s,const std::filesystem::path& path,std::string& err
             std::set<int> collected;
             for(const auto& id:a.at("collected")) collected.insert(id.get<int>());
             for(auto& l:c.loot) if(collected.erase(l.id)) l.collected=true;
-            if(!collected.empty()) throw std::runtime_error("Item desconhecido");
+            if(version==2 && !collected.empty()) throw std::runtime_error("Item desconhecido"); // v1 map eggs have been retired.
             std::set<int> enemyIds;
             for(const auto& b:a.at("enemies")) {
                 int id=b.at("id").get<int>();
@@ -93,7 +94,13 @@ bool Save::read(Simulation& s,const std::filesystem::path& path,std::string& err
                 if(!std::isfinite(it->hp) || it->hp<0 || it->hp>it->maxHp || it->rewarded!=(it->hp==0) || distance(it->pos,it->home)>1800 || candidate.world.blocked(it->pos,it->boss?27.f:18.f)) throw std::runtime_error("Estado de inimigo inválido");
                 it->brain=it->hp==0?Brain::Dead:Brain::Wander;
             }
-            if(enemyIds.size()!=c.enemies.size()) throw std::runtime_error("Inimigos ausentes");
+            if(version==2 && enemyIds.size()!=c.enemies.size()) throw std::runtime_error("Inimigos ausentes");
+            for(auto& drop:c.loot) if(drop.sourceEnemy>=0) {
+                const auto enemy=std::find_if(c.enemies.begin(),c.enemies.end(),[&](const Enemy& e){return e.id==drop.sourceEnemy;});
+                drop.spawned=enemy!=c.enemies.end() && enemy->rewarded;
+                if(drop.spawned) drop.pos=enemy->pos+Vec{drop.kind==LootKind::GoldenEgg?24.f:0.f,0};
+                else if(drop.collected) throw std::runtime_error("Drop coletado antes da derrota do inimigo");
+            }
         }
         candidate.world.stream(p.pos); candidate.notify("Progresso carregado. Boa aventura!");
         s=std::move(candidate); error.clear(); return true;

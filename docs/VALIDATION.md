@@ -57,3 +57,17 @@ Os testes gráficos usam saves temporários separados do progresso real. O runne
 Núcleo compilado com Emscripten 3.1.69, com exceções C++ e filesystem em memória. Teste Chromium via Playwright com touch emulado, viewports 844×390 e 390×844: movimento e ataque com dois dedos simultâneos, liberação independente, cancelamento, pausa, recarga do save local, rotação, cura pelo botão Comer e interação/compra na oficina sem teclado passaram. Sem erros JavaScript/WASM registrados. Capturas em `docs/screenshots/mobile-landscape.png` e `mobile-portrait.png`.
 
 Não foram realizados testes em telefone Android/iPhone físico, Safari móvel ou tela Windows touch. O backend nativo `WM_POINTER` compila no alvo Windows x64, mas ainda precisa ser exercitado nesses dispositivos. Não há APK/iOS nativo nem promessa de FPS em todo aparelho. A hospedagem estática depende de ativar o GitHub Pages no repositório.
+
+## Ovos por combate e inventário Web
+
+- Compilação Linux e Windows x64 por MinGW concluídas; Windows não foi executado em dispositivo real.
+- 24 cenários C++ passaram, incluindo drops apenas após derrota, coleta única,
+  saída/retorno de chunks, persistência de drops e migração de saves v1.
+- Smoke gráfico: 130 frames, coleta de alimento, save/reload e nove chunks ativos.
+  Zero ovos no trajeto inicial é esperado pela nova regra.
+- Playwright/Chromium verificou Bolsa por toque e tecla I, pausa enquanto aberta,
+  consumo de alimento e persistência, além dos controles com dois dedos.
+- Os cinco testes do pipeline de sprites passaram na entrega anterior.
+
+Não houve teste multiplayer: ainda não existe servidor cooperativo nesta versão.
+Nenhuma das sete folhas novas foi integrada: fontes PNG locais pendentes.

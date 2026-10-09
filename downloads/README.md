@@ -4,4 +4,4 @@ Baixe [MeuGalinheiro-Windows.zip](https://github.com/aminhagranja-sketch/paulo/r
 
 Este pacote foi compilado para Windows x64 com MinGW no Linux. Sua execução em Windows real ainda não foi verificada. A CI também compila e testa o código nativamente com MSVC.
 
-SHA-256: `ef39f4d146aaa8d78d0f15bb9f6a402f31839f32694a5f4af21c9b35f651a392`
+SHA-256: `bf2b4f2519b44c8a846ff44848f27fdb3b002ec94170bb128a0b21aa5d00f6b2`

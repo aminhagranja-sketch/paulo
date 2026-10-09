@@ -41,7 +41,7 @@ EMSCRIPTEN_KEEPALIVE const char* game_snapshot(float width,float height) {
     for(int y=y0;y<y0+rows;++y)for(int x=x0;x<x0+cols;++x)j["tiles"].push_back({x,y,int(game->world.terrain(x,y)),game->world.hash(x,y)});
     for(auto k:game->world.active()) {
         auto& c=game->world.ensure(k);
-        for(const auto& l:c.loot)if(!l.collected)j["loot"].push_back({l.pos.x,l.pos.y,int(l.kind)});
+        for(const auto& l:c.loot)if(!l.collected && l.spawned)j["loot"].push_back({l.pos.x,l.pos.y,int(l.kind)});
         for(const auto& e:c.enemies)if(e.hp>0)j["enemies"].push_back({e.pos.x,e.pos.y,e.aim.x,e.aim.y,e.hp,e.maxHp,e.boss,int(e.brain),e.tier});
     }
     for(const auto& e:game->effects)j["effects"].push_back({e.pos.x,e.pos.y,e.life/e.total,e.kind,e.text});

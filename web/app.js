@@ -13,8 +13,12 @@ function persist(){try{const data=api.save();if(!data)throw new Error('save vazi
 let existing=false;try{const saved=localStorage.getItem(storageKey);if(saved)existing=!!api.load(saved);}catch{};
 $('start').disabled=false;$('start').textContent=existing?'Continuar aventura':'Começar aventura';$('new').hidden=!existing;
 function cancelInput(){Module._game_cancel_input();pointers.clear();keys.clear();mouseAttack=false;pulses=0;mouseWorld=null;}
-function play(){paused=false;started=true;cancelInput();$('modal').hidden=true;$('hud').hidden=false;last=performance.now();acc=0;}
+function play(){paused=false;started=true;cancelInput();$('modal').hidden=true;$('inventory').hidden=true;$('workshop').hidden=true;$('hud').hidden=false;last=performance.now();acc=0;}
 function pause(){if(!started)return;paused=true;cancelInput();persist();$('modal').hidden=false;$('start').textContent='Voltar aos campos';$('menuText').textContent='Sua aventura está esperando por você.';$('save').hidden=false;$('new').hidden=false;}
+function updateInventory(){const p=api.snapshot(w/scale,h/scale).player;const items=[['Ovos comuns',p.eggs],['Ovos de ouro',p.gold],['Alimentos',p.food],['Moedas',p.coins],['Rivais vencidos',p.kills]];$('inventoryItems').replaceChildren(...items.flatMap(([name,count])=>{const term=document.createElement('dt'),value=document.createElement('dd');term.textContent=name;value.textContent=count;return[term,value];}));$('inventoryEat').disabled=p.food<=0||p.hp>=p.maxHp;}
+function inventory(){if(!started)return;paused=true;cancelInput();persist();updateInventory();$('inventory').hidden=false;}
+$('inventoryButton').onclick=inventory;$('closeInventory').onclick=play;
+$('inventoryEat').onclick=()=>{Module._game_tick(0,0,0,4,0,0);persist();updateInventory();};
 $('start').onclick=play;$('new').onclick=()=>{if(confirm('Começar outra aventura? Seu progresso salvo será substituído.')){Module._game_new();won=false;persist();play();}};
 $('pause').onclick=pause;$('save').onclick=persist;
 $('quest').onclick=()=>{showQuest=!showQuest;$('objectives').hidden=!showQuest;};
@@ -29,7 +33,7 @@ canvas.addEventListener('pointermove',e=>{if(paused)return;Module._game_pointer_
 function release(e){Module._game_pointer_up(e.pointerId);if(!pointers.get(e.pointerId))mouseAttack=false;pointers.delete(e.pointerId);}
 canvas.addEventListener('pointerup',release);canvas.addEventListener('pointercancel',release);canvas.addEventListener('lostpointercapture',release);canvas.addEventListener('contextmenu',e=>e.preventDefault());
 addEventListener('blur',()=>{if(started&&!paused)pause();else cancelInput();});document.addEventListener('visibilitychange',()=>{if(document.hidden&&started)pause();});addEventListener('pagehide',()=>{if(started)persist();});
-addEventListener('keydown',e=>{if(['ArrowUp','ArrowDown','ArrowLeft','ArrowRight',' ','Shift'].includes(e.key))e.preventDefault();if(e.key==='Escape'){if(paused)play();else pause();return;}if(paused)return;keys.add(e.key.toLowerCase());if(!e.repeat){if(e.key==='Shift')pulses|=2;if(e.key.toLowerCase()==='q')pulses|=4;if(e.key.toLowerCase()==='e'){pulses|=8;workshopRequested=true;}}});addEventListener('keyup',e=>keys.delete(e.key.toLowerCase()));
+addEventListener('keydown',e=>{if(['ArrowUp','ArrowDown','ArrowLeft','ArrowRight',' ','Shift'].includes(e.key))e.preventDefault();if(e.key==='Escape'){if(paused)play();else pause();return;}if(e.key.toLowerCase()==='i'&&!e.repeat){if($('inventory').hidden)inventory();else play();return;}if(paused)return;keys.add(e.key.toLowerCase());if(!e.repeat){if(e.key==='Shift')pulses|=2;if(e.key.toLowerCase()==='q')pulses|=4;if(e.key.toLowerCase()==='e'){pulses|=8;workshopRequested=true;}}});addEventListener('keyup',e=>keys.delete(e.key.toLowerCase()));
 const oval=(x,y,rx,ry,color)=>{ctx.fillStyle=color;ctx.beginPath();ctx.ellipse(x,y,rx,ry,0,0,Math.PI*2);ctx.fill();};
 const rect=(x,y,ww,hh,c)=>{ctx.fillStyle=c;ctx.fillRect(x,y,ww,hh);};
 const line=(x,y,x2,y2,width,c)=>{ctx.strokeStyle=c;ctx.lineWidth=width;ctx.beginPath();ctx.moveTo(x,y);ctx.lineTo(x2,y2);ctx.stroke();};

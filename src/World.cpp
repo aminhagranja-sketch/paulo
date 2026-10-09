@@ -52,8 +52,7 @@ Chunk World::generate(ChunkKey key) const {
         Vec p{(tx+.5f)*TileSize,(ty+.5f)*TileSize};
         auto t=terrain(tx,ty);
         if(blocked(p,18) || t==Terrain::Water || t==Terrain::Tree || t==Terrain::Rock || distance(p,nest)<150 || distance(p,bossHome)<180) continue;
-        if(h%100<8) c.loot.push_back({id++,p,LootKind::Egg,false});
-        else if(h%100==8) c.loot.push_back({id++,p,LootKind::GoldenEgg,false});
+        if(h%100<=8) ++id; // Reserve legacy IDs, but eggs only spawn after an enemy defeat.
         else if(h%100==9 || h%100==10) c.loot.push_back({id++,p,LootKind::Food,false});
         else if(h%100==11) c.loot.push_back({id++,p,LootKind::Chest,false});
         else if(h%100<14 && distance(p,nest)>400) {
@@ -62,15 +61,20 @@ Chunk World::generate(ChunkKey key) const {
         }
     }
     if(key==ChunkKey{0,0}) {
-        c.loot.push_back({1000,{340,160},LootKind::Egg,false});
+        c.enemies.push_back({1100,{500,160},{500,160},75,75,0,0,1,false});
+        c.enemies.push_back({1101,{700,160},{700,160},95,95,0,0,2,false});
         c.loot.push_back({1001,{420,160},LootKind::Food,false});
     }
     if(key==chunkAt(secretHome)) {
         c.loot.push_back({3000,secretHome,LootKind::Chest,false});
-        c.loot.push_back({3001,secretHome+Vec{-40,30},LootKind::GoldenEgg,false});
-        c.loot.push_back({3002,secretHome+Vec{40,30},LootKind::GoldenEgg,false});
+
     }
     if(key==chunkAt(bossHome)) c.enemies.push_back({2000,bossHome,bossHome,480,480,0,0,5,true});
+    for(const auto& enemy:c.enemies) {
+        c.loot.push_back({4000+enemy.id*2,enemy.home,LootKind::Egg,false,enemy.id,false});
+        if(enemy.tier>=2 || enemy.id%4==0)
+            c.loot.push_back({4001+enemy.id*2,enemy.home+Vec{24,0},LootKind::GoldenEgg,false,enemy.id,false});
+    }
     return c;
 }
 Chunk& World::ensure(ChunkKey key) {
@@ -81,6 +85,11 @@ Chunk& World::ensure(ChunkKey key) {
             for(auto& l:chunk.loot) l.collected=std::find(saved->second.collected.begin(),saved->second.collected.end(),l.id)!=saved->second.collected.end();
             for(auto& e:chunk.enemies) for(const auto& record:saved->second.enemies) if(record.id==e.id) {
                 e.pos=record.pos;e.hp=record.hp;e.rewarded=record.rewarded;e.brain=e.hp==0?Brain::Dead:Brain::Wander;
+            }
+            for(auto& loot:chunk.loot) if(loot.sourceEnemy>=0) {
+                const auto enemy=std::find_if(chunk.enemies.begin(),chunk.enemies.end(),[&](const Enemy& e){return e.id==loot.sourceEnemy;});
+                loot.spawned=enemy!=chunk.enemies.end() && enemy->rewarded;
+                if(loot.spawned) loot.pos=enemy->pos+Vec{loot.kind==LootKind::GoldenEgg?24.f:0.f,0};
             }
             dormant_.erase(saved);
         }

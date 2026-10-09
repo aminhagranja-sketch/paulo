@@ -25,6 +25,11 @@ void Simulation::attack(Vec aim) {
                 e.brain=Brain::Recover; e.timer=.24f;
             } else if(!e.rewarded) {
                 e.rewarded=true; e.brain=Brain::Dead; ++player.kills;
+                for(auto& drop:world.ensure(k).loot) if(drop.sourceEnemy==e.id) {
+                    drop.spawned=true;
+                    drop.pos=e.pos+Vec{drop.kind==LootKind::GoldenEgg?24.f:0.f,0};
+                }
+                saveRequested=true;
                 player.coins+=e.boss?150:12*e.tier; addXp(e.boss?250:25*e.tier);
                 if(e.boss) { player.bossDefeated=true; victoryEvent=true; notify("O Guardião caiu! Seu galinheiro agora é lendário."); }
                 else effect(e.pos,2,"+"+std::to_string(12*e.tier)+" moedas");
@@ -34,8 +39,8 @@ void Simulation::attack(Vec aim) {
 }
 void Simulation::collect() {
     for(auto k:world.active()) for(auto& item:world.ensure(k).loot) {
-        if(item.collected || distance(item.pos,player.pos)>38) continue;
-        item.collected=true;
+        if(item.collected || !item.spawned || distance(item.pos,player.pos)>38) continue;
+        item.collected=true; saveRequested=true;
         switch(item.kind) {
         case LootKind::Egg: ++player.eggs; player.coins+=3; addXp(4); effect(item.pos,2,"+1 ovo"); break;
         case LootKind::GoldenEgg: ++player.goldenEggs; player.coins+=25; addXp(15); effect(item.pos,2,"Ovo de ouro!"); break;

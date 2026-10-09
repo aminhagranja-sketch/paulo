@@ -113,7 +113,7 @@ int Game::run() {
         renderer.draw(window,sim,camera,screen,help,upgrades,screen==1 && !help && !upgrades?&touch:nullptr); window.display(); ++frames;
         if(smoke && frames==130) {
             save(); Simulation loaded; std::string error;
-            smokeSaved=Save::read(loaded,savePath,error) && loaded.player.eggs>=1 && loaded.player.pos.x>350 && loaded.world.active().size()==9;
+            smokeSaved=Save::read(loaded,savePath,error) && loaded.player.food>=4 && loaded.player.pos.x>350 && loaded.world.active().size()==9;
             sf::Texture screenshot(window.getSize()); screenshot.update(window);
             if(!screenshot.copyToImage().saveToFile(savePath.parent_path()/"smoke.png")) { std::cerr<<"Screenshot failed\n"; return 1; }
             std::cout<<"SMOKE frames="<<frames<<" eggs="<<loaded.player.eggs<<" chunks="<<loaded.world.active().size()<<" save_reload="<<(smokeSaved?"PASS":"FAIL")<<'\n';

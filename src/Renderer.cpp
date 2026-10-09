@@ -194,7 +194,7 @@ void Renderer::scenery(const Simulation& s,Vec camera) {
     }
     for(auto k:s.world.active()) {
         const auto& chunk=s.world.chunks().at(k);
-        for(const auto& l:chunk.loot) if(!l.collected && distance(l.pos,camera)<950) {
+        for(const auto& l:chunk.loot) if(!l.collected && l.spawned && distance(l.pos,camera)<950) {
             const Loot* item=&l;objects.push_back({l.pos.y,[&,item]{icon(item->kind,item->pos,s.elapsed);}});
         }
         for(const auto& e:chunk.enemies) if(e.hp>0 && distance(e.pos,camera)<950) {
