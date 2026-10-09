@@ -1,0 +1,18 @@
+{
+  "version": 6,
+  "configurePresets": [
+    {"name":"windows","displayName":"Windows x64 / Visual Studio 2022","generator":"Visual Studio 17 2022","architecture":"x64","binaryDir":"${sourceDir}/build/windows"},
+    {"name":"linux","generator":"Ninja","binaryDir":"${sourceDir}/build/linux","cacheVariables":{"CMAKE_BUILD_TYPE":"Release"}},
+    {"name":"core","generator":"Ninja","binaryDir":"${sourceDir}/build/core","cacheVariables":{"CMAKE_BUILD_TYPE":"Debug","GRANJA_BUILD_GAME":"OFF"}}
+  ],
+  "buildPresets": [
+    {"name":"windows","configurePreset":"windows","configuration":"Release"},
+    {"name":"linux","configurePreset":"linux"},
+    {"name":"core","configurePreset":"core"}
+  ],
+  "testPresets": [
+    {"name":"windows","configurePreset":"windows","configuration":"Release","output":{"outputOnFailure":true}},
+    {"name":"linux","configurePreset":"linux","output":{"outputOnFailure":true}},
+    {"name":"core","configurePreset":"core","output":{"outputOnFailure":true}}
+  ]
+}

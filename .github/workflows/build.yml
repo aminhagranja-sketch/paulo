@@ -1,0 +1,23 @@
+name: Build and test
+on: [push, pull_request, workflow_dispatch]
+jobs:
+  windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build, test and package
+        shell: pwsh
+        run: ./scripts/build-windows.ps1
+      - uses: actions/upload-artifact@v4
+        with:
+          name: MeuGalinheiro-Windows
+          path: build/MeuGalinheiro-Windows.zip
+  linux:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - name: Dependencies
+        run: sudo apt-get update && sudo apt-get install -y ninja-build libx11-dev libxrandr-dev libxcursor-dev libxi-dev libudev-dev libfreetype-dev libgl1-mesa-dev xvfb
+      - run: cmake --preset linux && cmake --build --preset linux --parallel 4 && ctest --preset linux
+      - name: Graphical smoke test
+        run: mkdir -p build/validation && xvfb-run -a build/linux/meu_galinheiro --smoke --save build/validation/save.json
