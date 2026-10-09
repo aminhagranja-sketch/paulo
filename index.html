@@ -11,7 +11,7 @@
 <canvas id="game" aria-label="Mundo do jogo. Use o analógico à esquerda e Bicar à direita."></canvas>
 <header id="hud" hidden>
  <div class="status"><span class="name">Pipoca <small id="level">NV. 1</small></span><div class="bar"><span id="health"></span></div><div class="energy"><span id="energy"></span></div><small id="stats"></small></div>
- <div class="top-actions"><button id="quest" aria-label="Ver missão">Missão</button><button id="pause" aria-label="Pausar"><span class="pause-icon" aria-hidden="true"></span></button></div>
+ <div class="top-actions"><button id="inventoryButton" aria-label="Abrir inventário">Bolsa</button><button id="quest" aria-label="Ver missão">Missão</button><button id="pause" aria-label="Pausar"><span class="pause-icon" aria-hidden="true"></span></button></div>
 </header>
 <aside id="objectives" hidden><strong>O desafio do Guardião</strong><p id="questText"></p><small>Azul: ninho · dourado: Guardião</small></aside>
 <div id="message" role="status"></div>
@@ -24,6 +24,7 @@
  <small id="saveStatus">Progresso salvo neste navegador.</small>
 </section></div>
 <div id="workshop" class="overlay" hidden><section class="card"><div class="eyebrow">DONA COCÓ</div><h2>Oficina do ninho</h2><p id="wallet"></p><button data-upgrade="0"></button><button data-upgrade="1"></button><button data-upgrade="2"></button><button id="leaveWorkshop" class="primary">Voltar aos campos</button></section></div>
-<div id="guide" class="overlay" hidden><section class="card"><h2>Guia de campo</h2><p>Analógico esquerdo: mover.<br><b>Bicar:</b> atacar na direção atual.<br><b>Esquiva:</b> evitar golpes.<br><b>Comer:</b> recuperar vida.<br><b>Usar:</b> descansar e comprar melhorias no ninho.</p><p>Colete 6 ovos, 2 ovos de ouro e vença 5 rivais. Encontre o Guardião na marca dourada. Círculos vermelhos anunciam golpes.</p><p>No computador: WASD, Espaço, Shift, Q e E.</p><button id="closeGuide" class="primary">Entendi</button></section></div>
+<div id="guide" class="overlay" hidden><section class="card"><h2>Guia de campo</h2><p>Analógico esquerdo: mover.<br><b>Bicar:</b> atacar na direção atual.<br><b>Esquiva:</b> evitar golpes.<br><b>Comer:</b> recuperar vida.<br><b>Usar:</b> descansar e comprar melhorias no ninho.</p><p>Derrote inimigos e recolha seus drops: 6 ovos, 2 ovos de ouro e 5 rivais vencidos. Encontre o Guardião na marca dourada. Círculos vermelhos anunciam golpes.</p><p>No computador: WASD, Espaço para bicar, Shift para esquivar, Q para comer, E para usar e I para inventário.</p><button id="closeGuide" class="primary">Entendi</button></section></div>
+<div id="inventory" class="overlay" hidden><section class="card"><div class="eyebrow">SUA MOCHILA</div><h2>Inventário</h2><dl id="inventoryItems"></dl><p>Ovos são coletados após derrotar inimigos. Use alimentos para recuperar vida.</p><small>Parâmetros de economia: ovo comum R$ 0,002; ovo de ouro R$ 10,00. Não há conversão ou saque nesta versão.</small><button id="inventoryEat">Comer um alimento</button><button id="closeInventory" class="primary">Voltar aos campos</button></section></div>
 <script src="granja.js"></script><script type="module" src="app.js"></script>
 </body></html>
