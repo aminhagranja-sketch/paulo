@@ -1,11 +1,13 @@
 #pragma once
-#include "Types.hpp"
+#include "CombatConfig.hpp"
 #include <map>
 #include <set>
 namespace granja {
 class World {
 public:
     explicit World(std::uint32_t seed=20261009):seed_(seed) {}
+    void configureLevel(int level);
+    int encounterLevel() const {return encounterLevel_;}
     std::uint32_t seed() const { return seed_; }
     Terrain terrain(int x,int y) const;
     bool blocked(Vec p,float radius) const;
@@ -22,6 +24,7 @@ public:
     std::uint32_t hash(int x,int y,int salt=0) const;
 private:
     std::uint32_t seed_;
+    int encounterLevel_{1};
     std::map<ChunkKey,Chunk> chunks_;
     std::set<ChunkKey> active_;
     std::map<ChunkKey,ChunkRecord> dormant_;

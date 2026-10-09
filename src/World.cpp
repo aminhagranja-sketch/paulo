@@ -56,7 +56,7 @@ Chunk World::generate(ChunkKey key) const {
         else if(h%100==9 || h%100==10) c.loot.push_back({id++,p,LootKind::Food,false});
         else if(h%100==11) c.loot.push_back({id++,p,LootKind::Chest,false});
         else if(h%100<14 && distance(p,nest)>400) {
-            int tier=1+std::min(3,int(distance(p,nest)/2200)); float hp=55.f+tier*20.f;
+            int tier=1+CombatConfig::level(encounterLevel_)/5; float hp=CombatConfig::health(encounterLevel_);
             c.enemies.push_back({id++,p,p,hp,hp,0,0,tier,false});
         }
     }
@@ -71,12 +71,36 @@ Chunk World::generate(ChunkKey key) const {
     }
     if(key==chunkAt(bossHome)) c.enemies.push_back({2000,bossHome,bossHome,480,480,0,0,5,true});
     for(auto& enemy:c.enemies) {
-        enemy.species=enemy.boss?Species::Chicken:enemy.id==1100?Species::Snake:enemy.id==1101?Species::Fox:enemy.id%3==0?Species::Snake:enemy.id%3==1?Species::Fox:Species::Chicken;
+        enemy.species=enemy.boss?Species::Chicken:CombatConfig::species(encounterLevel_);
+        if(!enemy.boss){enemy.tier=1+CombatConfig::level(encounterLevel_)/5;enemy.hp=enemy.maxHp=CombatConfig::health(encounterLevel_);}
         c.loot.push_back({4000+enemy.id*2,enemy.home,LootKind::Egg,false,enemy.id,false});
         if(enemy.tier>=2 || enemy.id%4==0)
             c.loot.push_back({4001+enemy.id*2,enemy.home+Vec{24,0},LootKind::GoldenEgg,false,enemy.id,false});
     }
     return c;
+}
+void World::configureLevel(int level) {
+    level=CombatConfig::level(level);
+    if(level==encounterLevel_) return;
+    const bool newBand=CombatConfig::band(level)!=CombatConfig::band(encounterLevel_);
+    const int previousLevel=encounterLevel_;
+    encounterLevel_=level;
+    if(!newBand) for(auto& [key,record]:dormant_) for(auto& enemy:record.enemies) if(enemy.id!=2000) enemy.hp=enemy.hp/CombatConfig::health(previousLevel)*CombatConfig::health(level);
+    // Invalidate dormant enemy encounters at a band change, keeping collected world items.
+    if(newBand) for(auto& [key,record]:dormant_) {
+        std::erase_if(record.enemies,[](const EnemyRecord& e){return e.id!=2000;});
+        std::erase_if(record.collected,[](int id){return id>=4000 && id!=8000 && id!=8001;});
+    }
+    for(auto& [key,chunk]:chunks_) {
+        for(auto& enemy:chunk.enemies) if(!enemy.boss) {
+            const float ratio=enemy.maxHp>0?enemy.hp/enemy.maxHp:1;
+            enemy.species=CombatConfig::species(level);enemy.tier=1+level/5;
+            enemy.maxHp=CombatConfig::health(level);
+            if(newBand){enemy.pos=enemy.home;enemy.hp=enemy.maxHp;enemy.rewarded=false;enemy.brain=Brain::Wander;enemy.timer=enemy.cooldown=0;}
+            else enemy.hp=ratio*enemy.maxHp;
+        }
+        if(newBand) for(auto& loot:chunk.loot) if(loot.sourceEnemy>=0 && loot.sourceEnemy!=2000) {loot.spawned=false;loot.collected=false;}
+    }
 }
 Chunk& World::ensure(ChunkKey key) {
     auto it=chunks_.find(key);
@@ -85,7 +109,7 @@ Chunk& World::ensure(ChunkKey key) {
         if(auto saved=dormant_.find(key);saved!=dormant_.end()) {
             for(auto& l:chunk.loot) l.collected=std::find(saved->second.collected.begin(),saved->second.collected.end(),l.id)!=saved->second.collected.end();
             for(auto& e:chunk.enemies) for(const auto& record:saved->second.enemies) if(record.id==e.id) {
-                e.pos=record.pos;e.hp=record.hp;e.rewarded=record.rewarded;e.brain=e.hp==0?Brain::Dead:Brain::Wander;
+                e.pos=record.pos;e.hp=std::min(record.hp,e.maxHp);e.rewarded=record.rewarded;e.brain=e.hp==0?Brain::Dead:Brain::Wander;
             }
             for(auto& loot:chunk.loot) if(loot.sourceEnemy>=0) {
                 const auto enemy=std::find_if(chunk.enemies.begin(),chunk.enemies.end(),[&](const Enemy& e){return e.id==loot.sourceEnemy;});

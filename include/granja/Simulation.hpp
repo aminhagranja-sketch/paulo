@@ -7,6 +7,11 @@ public:
     Player player;
     World world;
     std::vector<Effect> effects;
+    std::vector<ChestDrop> chests;
+    DropSettings drops;
+    std::uint32_t randomState{20261009},nextChestId{1};
+    void syncProgression() {world.configureLevel(player.level);}
+    std::uint32_t random();
     std::string message{"Explore os campos. E: conversar com Dona Cocó no ninho."};
     float messageTimer{7}, elapsed{};
     bool saveRequested{},victoryEvent{};
@@ -20,6 +25,8 @@ public:
     bool atNest() const { return distance(player.pos,World::nest)<110; }
 private:
     void updateEnemies(float dt);
+    void updateChests(float dt,bool interact);
+    void rewardChest(ChestDrop& chest);
     void hurt(float damage,Vec source);
     void effect(Vec pos,int kind,std::string text={});
 };

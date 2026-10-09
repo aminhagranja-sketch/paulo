@@ -1,85 +1,35 @@
-# Validação da versão inicial
+# Validação — 9 de outubro de 2026
 
-Validação realizada no ambiente Debian 13 x86_64 deste projeto em 9 de outubro de 2026.
+Executado no ambiente Debian x86_64:
 
-## Executado com sucesso
+- Release C++20 com GCC 14.2, CMake 3.31.6, SFML 3.0.2 e JSON 3.12.0; **32 cenários C++ passaram** no CTest.
+- Transições 9→10 e 19→20, nível 40, troca de chunks e reload nas cinco fronteiras; progressão independente, drops 0/100%, interação obrigatória e recompensa única mesmo após save/reload durante abertura.
+- **Oito testes do pipeline**: validação de fontes, recortes, isolamento de componentes, transparência, pivôs e preservação dos pixels de origem.
+- WASM Emscripten 3.1.69 e Chromium/Playwright: dois dedos simultâneos, movimento/ataque, liberação, cancelamento, cura, oficina, Bolsa, pausa, save/reload, paisagem e retrato. Carregamento de oito categorias e desenho dos 189 quadros sem suavização. Sem erros JavaScript/WASM.
+- **Multiplayer com dois contextos de navegador**: avatares visíveis, transições individuais 9→10/19→20, ausência de PvP, drops privados, interação simultânea, reconexão durante abertura, recompensa única e rejeição de alterações forjadas de nível/inventário.
+- Smoke SFML/Xvfb: 130 frames com os atlas originais, coleta de alimento, nove chunks ativos e save/reload. Zero ovos no trajeto inicial é esperado.
+- Windows x64 por MinGW: compilação cruzada e pacote ZIP gerados.
 
-- Compilação Release de `meu_galinheiro` e `granja_tests` com GCC 14.2, CMake 3.31.6, SFML 3.0.2 e JSON 3.12.0.
-- **19 testes de gameplay**, executados por `granja_tests` e registrados como um alvo no CTest:
-  - ownership multitouch independente para analógico e ataque;
-  - cancelamento, zona morta, pulsos e resize do controlador;
-  - velocidade proporcional à intensidade do analógico;
-  - seed, terreno e recompensas determinísticos;
-  - coordenadas negativas e exatamente nove chunks ativos;
-  - descarregamento e restauração dos itens coletados;
-  - colisão com água sem atravessar obstáculos;
-  - caminhos acessíveis até a arena, pomar e recursos necessários à missão;
-  - movimento diagonal normalizado;
-  - coleta sem duplicar recompensa;
-  - cone de ataque, cooldown, morte, XP e moedas;
-  - golpe anunciado de NPC e invulnerabilidade de esquiva;
-  - respawn e penalidade de moedas;
-  - alimentos e cura sem desperdício;
-  - níveis, economia e restrição de melhorias ao ninho;
-  - bloqueio do chefe, vitória e recompensa única;
-  - save/load JSON e substituição de um save existente;
-  - persistência de chunks já descarregados;
-  - rejeição transacional de JSON inválido e vida fora de intervalo.
-- **Smoke gráfico** com Xvfb e OpenGL Mesa por software: janela SFML, fonte, terreno, personagens e HUD renderizados em 130 frames; movimento, coleta de um ovo, salvamento e recarga bem-sucedidos. Captura em `docs/screenshots/gameplay.png`.
-- **Compilação cruzada Windows x64** usando MinGW GCC 14-posix: executável PE gerado com SFML e FreeType estáticos. Inspeção de imports confirmou apenas DLLs do sistema Windows: ADVAPI32, GDI32, KERNEL32, msvcrt, OPENGL32, USER32 e WINMM.
-
-## Limites da evidência
-
-A execução do `.exe` em uma máquina Windows real e o build nativo MSVC não foram realizados neste ambiente Linux. A CI incluída prepara esse build e executa os testes em Windows, mas ainda precisa rodar no GitHub. A compilação cruzada não substitui testes gráficos no sistema de destino.
-
-O Xvfb não forneceu antialiasing MSAA nem controle de sincronização vertical; SFML usou o contexto disponível e o smoke passou. O limite de 60 FPS não é uma promessa de desempenho em todos os computadores. Não houve benchmark em GPU dedicada nem teste de exploração de milhares de chunks.
+Capturas dos testes ficam em `build/validation/`; as capturas selecionadas em `docs/screenshots/`. O teste de cura usa o ninho para isolar dano de inimigos. O teste multiplayer força drops com configuração temporária e não modifica perfis reais.
 
 ## Reproduzir
 
-```bash
-./scripts/bootstrap-cloud.sh
+```sh
 source scripts/cloud-env.sh
+cmake --build build/cloud --parallel 4
 ctest --test-dir build/cloud --output-on-failure
+python3 -m unittest discover -s tests -p 'test_sprite_pipeline.py'
 ./scripts/validate-graphics.sh
+npm ci --ignore-scripts
+# Com servidor estático de web/ ativo internamente na porta 8088:
+npm run test:web
+# Inicia/encerra seu próprio servidor e usa dados temporários:
+npm run test:multiplayer
 ./scripts/build-windows-cross.sh
 ```
 
-No Windows com Visual Studio 2022:
+## Limites
 
-```powershell
-./scripts/build-windows.ps1 -Run
-```
+Os testes usam touch emulado; Android/iPhone físico, Safari, tela Windows touch e execução do EXE em Windows real não foram testados. A CI prepara testes nativos MSVC. Xvfb não forneceu MSAA ou sincronização vertical; o contexto disponível passou no smoke.
 
-Os testes gráficos usam saves temporários separados do progresso real. O runner sai com código diferente de zero se movimento, recompensa, recarga ou captura falharem.
-
-## Validação móvel (v1.1)
-
-Núcleo compilado com Emscripten 3.1.69, com exceções C++ e filesystem em memória. Teste Chromium via Playwright com touch emulado, viewports 844×390 e 390×844: movimento e ataque com dois dedos simultâneos, liberação independente, cancelamento, pausa, recarga do save local, rotação, cura pelo botão Comer e interação/compra na oficina sem teclado passaram. Sem erros JavaScript/WASM registrados. Capturas em `docs/screenshots/mobile-landscape.png` e `mobile-portrait.png`.
-
-Não foram realizados testes em telefone Android/iPhone físico, Safari móvel ou tela Windows touch. O backend nativo `WM_POINTER` compila no alvo Windows x64, mas ainda precisa ser exercitado nesses dispositivos. Não há APK/iOS nativo nem promessa de FPS em todo aparelho. A hospedagem estática depende de ativar o GitHub Pages no repositório.
-
-## Ovos por combate e inventário Web
-
-- Compilação Linux e Windows x64 por MinGW concluídas; Windows não foi executado em dispositivo real.
-- 24 cenários C++ passaram, incluindo drops apenas após derrota, coleta única,
-  saída/retorno de chunks, persistência de drops e migração de saves v1.
-- Smoke gráfico: 130 frames, coleta de alimento, save/reload e nove chunks ativos.
-  Zero ovos no trajeto inicial é esperado pela nova regra.
-- Playwright/Chromium verificou Bolsa por toque e tecla I, pausa enquanto aberta,
-  consumo de alimento e persistência, além dos controles com dois dedos.
-- Os cinco testes do pipeline de sprites passaram na entrega anterior.
-
-Não houve teste multiplayer: ainda não existe servidor cooperativo nesta versão.
-As oito folhas do RAR foram integradas à versão Web.
-
-## Integração dos sprites originais
-
-- Compilação Linux e WebAssembly concluídas; 26 cenários C++ passaram.
-- Sete testes do pipeline passaram, incluindo limpeza de fundo sem apagar
-  detalhes pretos internos e preservação de RGBA dos pixels de personagem.
-- Playwright/Chromium confirmou carregamento e desenho dos oito atlas de
-  categorias, compra na loja por toque e abertura de baú após coleta no C++.
-- Controles com dois dedos, inventário, save/reload e retrato/paisagem passaram.
-- Screenshots Web foram inspecionados visualmente e ajustados para excluir
-  fragmentos de legendas e sprites vizinhos.
-- Não houve teste em aparelho físico; nenhuma meta de FPS foi comprovada.
+Não houve benchmark com 20 jogadores ou garantia de FPS em aparelhos móveis. O servidor foi validado internamente com dois clientes, sem hospedagem pública. O GitHub Pages entrega somente o modo solo e o cliente; necessita serviço Node.js/WebSocket separado para multiplayer público. A checagem HTTPS da publicação verifica os arquivos servidos, sem teste de navegador público neste ambiente.

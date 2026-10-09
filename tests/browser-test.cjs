@@ -46,11 +46,11 @@ let browser;
  assert(s.controls.stick[0]<195&&s.controls.attack[0]>195,'Portrait control sides incorrect');
  assert(s.controls.attack[1]<844&&s.controls.stick[1]>600,'Controls outside portrait viewport');
  // Actual eat button and C++ healing path, using a valid edited save fixture.
- await page.evaluate(()=>{const d=window.granjaDebug,m=d.module;const save=JSON.parse(m.UTF8ToString(m._game_save()));save.player.hp=30;save.player.food=3;m.ccall('game_load','number',['string'],[JSON.stringify(save)]);});
+ await page.evaluate(()=>{const d=window.granjaDebug,m=d.module;const save=JSON.parse(m.UTF8ToString(m._game_save()));save.player.pos=[160,160];save.player.hp=30;save.player.food=3;m.ccall('game_load','number',['string'],[JSON.stringify(save)]);});
  await page.waitForTimeout(70);s=await page.evaluate(()=>window.granjaDebug.state);
  await cdp.send('Input.dispatchTouchEvent',{type:'touchStart',touchPoints:[finger(5,...s.controls.eat)]});
  await cdp.send('Input.dispatchTouchEvent',{type:'touchEnd',touchPoints:[]});await page.waitForTimeout(100);
- p=await page.evaluate(()=>window.granjaDebug.state.player);assert(p.hp===75&&p.food===2,'Food touch button failed');
+ p=await page.evaluate(()=>window.granjaDebug.state.player);assert(p.hp===75&&p.food===2,'Food touch button failed: '+JSON.stringify(p));
  // Workshop must be reachable with touch alone.
  await page.evaluate(()=>{const m=window.granjaDebug.module;const save=JSON.parse(m.UTF8ToString(m._game_save()));save.player.pos=[160,160];save.player.hp=40;save.player.coins=100;save.player.attackUp=0;m.ccall('game_load','number',['string'],[JSON.stringify(save)]);});
  await page.waitForTimeout(80);s=await page.evaluate(()=>window.granjaDebug.state);
@@ -61,7 +61,7 @@ let browser;
  p=await page.evaluate(()=>window.granjaDebug.state.player);assert.equal(p.attackUp,1);assert.equal(p.coins,70);assert.equal(p.hp,p.maxHp);
  await page.locator('#leaveWorkshop').click();await page.waitForTimeout(80);
  // Inventory is accessible on touch and desktop; use preserves time and persists food.
- await page.evaluate(()=>{const m=window.granjaDebug.module;const save=JSON.parse(m.UTF8ToString(m._game_save()));save.player.hp=30;save.player.food=3;m.ccall('game_load','number',['string'],[JSON.stringify(save)]);});
+ await page.evaluate(()=>{const m=window.granjaDebug.module;const save=JSON.parse(m.UTF8ToString(m._game_save()));save.player.pos=[160,160];save.player.hp=30;save.player.food=3;m.ccall('game_load','number',['string'],[JSON.stringify(save)]);});
  await page.locator('#inventoryButton').click();await page.locator('#inventory').waitFor({state:'visible'});
  const frozen=await page.evaluate(()=>window.granjaDebug.state.time);
  await page.locator('#inventoryEat').click();
@@ -86,7 +86,9 @@ let browser;
  await page.evaluate(([x,y])=>{const m=window.granjaDebug.module,save=JSON.parse(m.UTF8ToString(m._game_save()));save.player.pos=[x,y];m.ccall('game_load','number',['string'],[JSON.stringify(save)]);},chest);
  await page.waitForFunction(()=>window.granjaDebug.openedChests.size>0);
  assert(await page.evaluate(()=>window.granjaDebug.sprites.drawCounts.get('chests')>0),'Chest sprite was not drawn');
- for(const category of ['buildings','trees','environment','characters/chicks','characters/chicken','enemies/snake','enemies/fox'])assert(await page.evaluate(c=>window.granjaDebug.sprites.drawCounts.get(c)>0,category),`Original atlas never rendered: ${category}`);
+ for(const category of ['buildings','trees','environment','characters/chicks','characters/chicken'])assert(await page.evaluate(c=>window.granjaDebug.sprites.drawCounts.get(c)>0,category),`Original atlas never rendered: ${category}`);
+ // Render every frame, including species that are intentionally absent at level 1.
+ const rendered=await page.evaluate(()=>{const d=window.granjaDebug,c=document.createElement('canvas');c.width=2200;c.height=1800;const ctx=c.getContext('2d');ctx.imageSmoothingEnabled=false;let index=0;for(const [category,sheet]of d.sprites.sheets)for(const id of Object.keys(sheet.frames)){d.sprites.draw(ctx,category,id,60+(index%25)*86,120+Math.floor(index/25)*190,0,.35);index++;}return{count:index,smoothing:ctx.imageSmoothingEnabled};});assert(rendered.count>=189);assert.equal(rendered.smoothing,false);
  await page.evaluate(()=>{const m=window.granjaDebug.module,save=JSON.parse(m.UTF8ToString(m._game_save()));save.player.pos=[160,160];m.ccall('game_load','number',['string'],[JSON.stringify(save)]);});
  await page.waitForTimeout(100);
  fs.mkdirSync('build/validation/mobile',{recursive:true});await page.screenshot({path:'build/validation/mobile/portrait.png'});

@@ -4,7 +4,7 @@ Jogo top-down em **C++20 + SFML 3.0.2**, com mundo procedural por chunks, combat
 
 ![Gameplay](docs/screenshots/gameplay.png)
 
-A direção visual segue a referência de Zelda enviada: composição vista de cima, cores rurais, volume por sombras, vegetação em camadas e ataques legíveis. O cenário é original, desenhado proceduralmente. Na Web, galinha, inimigos e cenário usam recortes das oito folhas originais enviadas pelo usuário. A versão SFML ainda usa os atlas da galinha preparados anteriormente; não usa recursos de Zelda.
+A direção visual segue a referência de Zelda enviada: composição vista de cima, cores rurais, volume por sombras, vegetação em camadas e ataques legíveis. O cenário é original, desenhado proceduralmente. Na Web e no SFML, galinha, inimigos e cenário usam 189 recortes das oito folhas originais enviadas pelo usuário, com pivôs nos pés e texturas sem suavização.
 
 ## Jogar no celular e telas touch
 
@@ -19,7 +19,7 @@ A pasta `web/` contém a versão de navegador, com o **mesmo núcleo de gameplay
 - Saves JSON no armazenamento local do navegador, separados do save Windows.
 - Render com DPR limitado a 1,5 para conter custo em telas de alta densidade.
 
-Para publicar no GitHub Pages, use a branch `gh-pages`, raiz `/`, em **Settings → Pages → Deploy from a branch**. O endereço esperado após ativar é `https://aminhagranja-sketch.github.io/paulo/`. A publicação precisa estar ativa antes de esse endereço funcionar.
+**Jogar agora: https://aminhagranja-sketch.github.io/paulo/** (solo). O GitHub Pages já está ativo. Multiplayer público requer um servidor Node.js com WebSocket e HTTPS; veja [configuração do servidor](server/README.md).
 
 Para desenvolver localmente:
 
@@ -36,15 +36,15 @@ Testes de navegador: `npm ci`, `npx playwright install chromium` e `npm run test
 
 No Windows, os controles virtuais também aceitam mouse e toque; **F2** exibe/oculta os controles. Como o SFML Win32 não fornece multitouch, `NativeTouch.cpp` adapta os eventos nativos `WM_POINTER` para o mesmo controlador. Esse caminho precisa de validação em equipamento Windows touch real.
 
-## Evolução para o pedido multiplayer
+## Inimigos, baús e multiplayer
 
-O processamento das sete folhas está documentado em [SPRITES.md](docs/SPRITES.md).
-As oito folhas originais foram integradas à Web: galinha adulta, cobras, raposas, pintinhos, árvores, construções, decoração e baús animados. A nova regra de ovos e o inventário Web já funcionam. Saves v1 são migrados para
-v2 preservando inventário; ovos antigos espalhados pelo mapa foram removidos.
+As faixas de inimigos comuns seguem o nível individual: **1–9 pintinhos, 10–19 raposas e 20–40 cobras**. A transição troca os encontros ativos e os chunks descarregados. O Guardião continua como chefe da missão; pintinhos decorativos da vila são NPCs.
 
-A versão atual ainda é individual, com Canvas 2D e salvamento local. Servidor
-autoritativo, cooperação, PostgreSQL e câmera Babylon 2.5D permanecem pendentes.
-As construções têm estados de porta por proximidade; interiores ainda não foram implementados.
+Derrotas podem gerar baús privados: 5% para pintinhos, 10% para raposas e 15% para cobras. Raridades: comum 70%, raro 23%, épico 6%, lendário 1%. Aproxime-se e aperte **E/Usar**; a recompensa ocorre uma vez ao concluir a abertura. Itens incluem ovos, milho, penas, moedas, alimentos, materiais e evolução. O save v3 preserva abertura e recompensa; versões v1/v2 mantêm o inventário e renovam os encontros.
+
+O servidor opcional usa o mesmo C++/WASM para validar combate, progressão e recompensas. Jogadores veem uns aos outros no mesmo terreno; encontros e drops são individuais, sem PvP ou combate cooperativo contra o mesmo inimigo. Progresso é gravado em JSON por sessão. Execute `npm ci` e `npm start`; veja [server/README.md](server/README.md) para persistência, configuração e hospedagem. Não há servidor público contratado nesta entrega.
+
+[SPRITES.md](docs/SPRITES.md) explica os recortes e a importação. Construções têm portas por proximidade; interiores, PostgreSQL e câmera Babylon 2.5D permanecem pendentes.
 
 ## Jogar no Windows
 
@@ -82,12 +82,12 @@ O script também gera `build/MeuGalinheiro-Windows.zip`. O SFML e o JSON são ob
 ## Objetivo e sistemas
 
 1. Explore os campos, bosques e lagos. Há um pomar secreto com tesouros.
-2. Colete **6 ovos**, **2 ovos de ouro** e vença **5 galinhas rivais**.
+2. Colete **6 ovos**, **2 ovos de ouro** e vença **5 inimigos**.
 3. Ganhe moedas e XP. Suba de nível e compre melhorias no ninho.
 4. Encontre o **Galo Guardião** na marca dourada do minimapa e vença o combate final.
 5. Após a vitória, continue explorando o mesmo mundo.
 
-Ovos, alimentos e baús são coletados por proximidade. Baús dão 40 moedas, dois alimentos e XP. Galinhas rivais dão moedas e XP conforme sua força. O Guardião fica selado até cumprir a missão.
+Ovos, alimentos e baús fixos do mapa são coletados por proximidade. Baús fixos dão 40 moedas, dois alimentos e XP. Baús de inimigos exigem E/Usar e têm recompensa variável. Inimigos dão moedas e XP conforme sua força. O Guardião fica selado até cumprir a missão.
 
 Ataques custam energia e acertam um arco à frente. Inimigos anunciam o golpe com uma área vermelha antes de atacar. Esquive para evitar dano, respeitando o custo de energia. Alimentos curam 45 pontos; não são consumidos com vida cheia. Ao perder toda a vida, você retorna ao ninho e perde 10% das moedas, mantendo os outros itens.
 
@@ -180,8 +180,8 @@ JSON versionado com seed, jogador, itens coletados e estado dos inimigos das ár
 
 ## Escopo desta versão
 
-Uma aventura solo completa até o chefe final, com um NPC de apoio, uma família de rivais com quatro níveis de força, três melhorias, quatro tipos de recompensa, um local secreto e terreno procedural. A interface usa coordenadas base 1920×1080 com letterboxing; a janela inicial é 1280×720. A simulação é fixa em 60 Hz e o render tem limite de 60 FPS, dependente do hardware.
+Uma aventura solo completa até o chefe final, com um NPC de apoio, três famílias de inimigos conforme o nível, três melhorias, recompensas variadas, um local secreto e terreno procedural. A interface usa coordenadas base 1920×1080 com letterboxing; a janela inicial é 1280×720. A simulação é fixa em 60 Hz e o render tem limite de 60 FPS, dependente do hardware.
 
-A apresentação combina cenário 2D vetorial e sprites PNG animados para Pipoca. Os atlas contêm caminhada em quatro direções, ataque, esquiva, dano e vitória; idle usa o primeiro quadro da direção. Não reproduz a renderização 3D/tilt-shift da imagem de referência. Esta versão não inclui áudio, multiplayer, gamepad, APK nativo, construção de fazenda ou campanhas adicionais.
+A apresentação combina cenário 2D vetorial e sprites PNG animados para Pipoca. Os atlas contêm caminhada em quatro direções, ataque, esquiva, dano e vitória; idle usa o primeiro quadro da direção. Não reproduz a renderização 3D/tilt-shift da imagem de referência. Esta versão não inclui áudio, gamepad, APK nativo, construção de fazenda ou campanhas adicionais.
 
 Código sob MIT; veja [licenças de terceiros](THIRD_PARTY.md).

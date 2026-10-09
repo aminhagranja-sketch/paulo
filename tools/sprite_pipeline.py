@@ -145,6 +145,38 @@ def remove_border_black(crop, alpha_threshold=0):
     return crop
 
 
+def isolate_components(crop, keep=1):
+    """Retain reviewed foreground components and their original edge pixels, without blur."""
+    width,height=crop.size
+    data=crop.getchannel('A').tobytes();seen=bytearray(width*height);components=[]
+    for start,value in enumerate(data):
+        if value<175 or seen[start]:continue
+        seen[start]=1;stack=[start];component=[]
+        while stack:
+            index=stack.pop();component.append(index);x,y=index%width,index//width
+            for ny in range(max(0,y-1),min(height,y+2)):
+                for nx in range(max(0,x-1),min(width,x+2)):
+                    other=ny*width+nx
+                    if not seen[other] and data[other]>=175:seen[other]=1;stack.append(other)
+        components.append(component)
+    components.sort(key=len,reverse=True)
+    if not components:raise ValueError('Recorte sem personagem/objeto visível')
+    primary=components[0]
+    xs=[i%width for i in primary];ys=[i//width for i in primary]
+    bounds=[min(xs),min(ys),max(xs)+1,max(ys)+1]
+    feet=[i%width for i in primary if i//width>=bounds[3]-max(4,int((bounds[3]-bounds[1])*.10))]
+    pivot=[sum(feet)/len(feet),bounds[3]]
+    mask=bytearray(width*height)
+    for component in components[:keep]:
+        for index in component:
+            x,y=index%width,index//width
+            for ny in range(max(0,y-2),min(height,y+3)):
+                for nx in range(max(0,x-2),min(width,x+3)):mask[ny*width+nx]=1
+    pixels=list(crop.get_flattened_data())
+    crop.putdata([pixel if mask[i] else (*pixel[:3],0) for i,pixel in enumerate(pixels)])
+    return crop,{'bodyBounds':bounds,'bodyArea':len(primary),'pivot':pivot}
+
+
 def pack(source_dir, manifest, assets, size=2048):
     if not 64 <= size <= 4096:
         raise ValueError('Tamanho do atlas deve estar entre 64 e 4096')
@@ -184,6 +216,9 @@ def pack(source_dir, manifest, assets, size=2048):
                 crop = remove_border_black(crop)
             elif entry.get('cleanBorderAlpha'):
                 crop = remove_border_black(crop, entry['cleanBorderAlpha'])
+            body = None
+            if frame.get('isolateComponents'):
+                crop,body = isolate_components(crop,frame.get('keepComponents',1))
             # Paste without a mask preserves alpha exactly, including translucent fringes.
             atlas.paste(crop, (x, y))
             # Extrude edge pixels into padding to avoid linear-filter seams.
@@ -193,10 +228,18 @@ def pack(source_dir, manifest, assets, size=2048):
             atlas.paste(crop.crop((width-1,0,width,height)), (x+width,y))
             metadata[frame['id']] = {'page': len(pages), 'rect': [x,y,width,height],
                                       'sourceRect': frame['rect'], 'origin': frame['origin']}
+            if body:
+                metadata[frame['id']].update(body)
+                if frame.get('anchorFeet'):metadata[frame['id']]['origin']=body['pivot']
             crops.append((frame['id'], crop))
             x += width+4
             row_height = max(row_height, height)
         pages.append(atlas)
+        if entry.get('normalizeActors'):
+            reference=[metadata[f]['bodyArea'] for name,a in entry['animations'].items() if name.startswith('idle') for f in a['frames'] if 'bodyArea' in metadata[f]]
+            reference.sort();base=reference[len(reference)//2]
+            for record in metadata.values():
+                record['scaleAdjustment']=max(.75,min(1.33,math.sqrt(base/record['bodyArea'])))
         prepared.append((category, entry, pages, crops, metadata))
     for category, entry, pages, crops, metadata in prepared:
         processed = assets/'processed'/category

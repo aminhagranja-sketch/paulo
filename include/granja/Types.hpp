@@ -26,7 +26,7 @@ struct ChunkKey {
 inline ChunkKey chunkAt(Vec p) { return {int(std::floor(p.x/ChunkSize)),int(std::floor(p.y/ChunkSize))}; }
 enum class Terrain { Grass, Meadow, Dirt, Water, Tree, Rock };
 enum class LootKind { Egg, GoldenEgg, Food, Chest };
-enum class Species { Chicken, Snake, Fox };
+enum class Species { Chicken, Snake, Fox, Chick };
 enum class Brain { Wander, Chase, Windup, Recover, Dead };
 struct Loot { int id{}; Vec pos{}; LootKind kind{}; bool collected{}; int sourceEnemy{-1}; bool spawned{true}; };
 struct Enemy {
@@ -36,9 +36,12 @@ struct Enemy {
 struct EnemyRecord { int id{}; Vec pos{}; float hp{}; bool rewarded{}; };
 struct ChunkRecord { std::vector<int> collected; std::vector<EnemyRecord> enemies; };
 struct Chunk { ChunkKey key{}; std::vector<Loot> loot; std::vector<Enemy> enemies; };
+enum class ChestState { Emerging, Closed, Opening, Open, Fading };
+struct ChestDrop { std::uint32_t id{}; Vec pos{}; int rarity{},level{1}; ChestState state{ChestState::Emerging}; float timer{.35f}; bool rewarded{}; };
 struct Player {
     Vec pos{160,160}, facing{1,0}; float hp{100},stamina{100},invulnerable{},attackCooldown{},attackVisual{},dodgeTimer{};
     Vec dodgeDirection{1,0}; float walkTime{}; bool moving{}; int level{1},xp{},coins{},eggs{},goldenEggs{},food{3},kills{},healthUp{},attackUp{},speedUp{},deaths{};
+    int corn{},feathers{},materials{},evolutionItems{};
     bool bossDefeated{};
     float maxHp() const { return 100.f+(level-1)*12.f+healthUp*25.f; }
     float damage() const { return 24.f+(level-1)*4.f+attackUp*8.f; }

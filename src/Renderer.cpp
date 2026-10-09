@@ -8,11 +8,7 @@ const sf::Color Ink{23,39,38},Muted{173,195,175},Cream{250,243,215},Gold{255,207
 sf::Color alpha(sf::Color c,unsigned a) {c.a=static_cast<std::uint8_t>(a);return c;}
 sf::String utf8(const std::string& s) {return sf::String::fromUtf8(s.begin(),s.end());}
 }
-Renderer::Renderer(const std::filesystem::path& assets) {
-    if(!playerAtlas.loadFromFile(assets/"sprites"/"chicken-walk.png")) throw std::runtime_error("Atlas do personagem ausente.");
-    playerAtlas.setSmooth(true);
-    hasActions=actionAtlas.loadFromFile(assets/"sprites"/"chicken-actions.png");
-    if(hasActions) actionAtlas.setSmooth(true);
+Renderer::Renderer(const std::filesystem::path& assets):sprites(assets) {
     if(!font.openFromFile(assets/"fonts"/"DejaVuSans.ttf")) throw std::runtime_error("Fonte ausente. Execute junto da pasta assets ou use --assets.");
 }
 sf::View Renderer::uiView(sf::Vector2u size) {
@@ -49,51 +45,18 @@ void Renderer::panel(Vec p,Vec size) {
 void Renderer::bar(Vec p,Vec size,float ratio,sf::Color color) {
     rect(p,size,{9,23,26,210});rect(p,{size.x*std::clamp(ratio,0.f,1.f),size.y},color);rect(p,{size.x,2},alpha(sf::Color::White,35));
 }
-void Renderer::chicken(Vec p,Vec facing,sf::Color body,float t,float scale,bool moving,bool boss) {
-    auto q=[&](float x,float y){return p+Vec{x*scale,y*scale};};
-    auto ellipse=[&](float x,float y,float rx,float ry,sf::Color color){oval(q(x,y),{rx*scale,ry*scale},color);};
-    float bob=moving?std::sin(t*15)*2:std::sin(t*2)*1;
-    ellipse(5,7,23,10,{20,46,34,80});
-    float step=moving?std::sin(t*15)*4:0;
-    line(q(-7,10),q(-8,20+step),3*scale,{234,153,45});line(q(7,10),q(9,20-step),3*scale,{234,153,45});
-    line(q(-8,20+step),q(-14,22+step),2*scale,{255,185,69});line(q(9,20-step),q(15,22-step),2*scale,{255,185,69});
-    // Tail feathers opposite the gaze, soft highlight and a dark rim.
-    ellipse(-facing.x*18,1-facing.y*9+bob,9,13,body);
-    ellipse(-facing.x*22,-3-facing.y*9+bob,5,11,Cream);
-    ellipse(0,-3+bob,20,24,{70,69,51});ellipse(0,-6+bob,19,23,body);
-    ellipse(-6,-12+bob,10,14,alpha(Cream,110));
-    ellipse(facing.x>0?-10:10,0+bob,8,14,{207,188,139});
-    ellipse(facing.x>0?-10:10,-3+bob,7,12,body);
-    float hx=facing.x*8,hy=-19+facing.y*6+bob;
-    ellipse(hx,hy,15,15,body);ellipse(hx-4,hy-4,9,8,alpha(Cream,135));
-    ellipse(hx-6,hy-15,4,7,{209,58,54});ellipse(hx,hy-17,5,8,{232,68,57});ellipse(hx+6,hy-15,4,6,{214,48,48});
-    ellipse(hx+facing.x*11,hy+9,4,6,{205,61,52});
-    Vec beak=q(hx+facing.x*14,hy+facing.y*8);
-    polygon({beak+Vec{-4*scale,-4*scale},beak+Vec{facing.x*12*scale,4*scale+facing.y*8*scale},beak+Vec{-4*scale,5*scale}},{255,179,48});
-    float ex=hx+(facing.x>=0?5.f:-5.f);
-    ellipse(ex,hy-2,4,5,{255,252,228});ellipse(ex+(facing.x>=0?1:-1),hy-2,2.4f,3,{32,37,37});ellipse(ex+1,hy-3,1,1,sf::Color::White);
-    if(boss) {
-        polygon({q(-14,-47),q(-16,-61),q(-7,-55),q(0,-68),q(8,-55),q(17,-61),q(14,-47)},Gold);
-        line(q(-14,-47),q(14,-47),4*scale,{166,113,35});ellipse(0,-51,3,3,{201,51,73});
-    }
+void Renderer::chicken(Vec pos,Vec facing,sf::Color,float time,float scale,bool moving,bool boss) {
+    Player player;player.pos=pos;player.facing=facing;player.moving=moving;player.walkTime=time;playerSprite(player,time,80*scale);
+    if(boss) text("REI",pos+Vec{0,-100},18,Gold,true);
 }
 void Renderer::playerSprite(const Player& p,float time,float size) {
-    int direction=std::abs(p.facing.x)>std::abs(p.facing.y)?(p.facing.x<0?1:3):(p.facing.y<0?2:0);
-    int frame=p.moving?int(p.walkTime*(p.dodgeTimer>0?20:9))%4:0;
-    sf::Texture* texture=&playerAtlas;
-    bool flip=false;int row=direction;
-    if(hasActions && (p.attackVisual>0 || p.dodgeTimer>0 || p.invulnerable>.3f || (p.bossDefeated && !p.moving))) {
-        texture=&actionAtlas;flip=p.facing.x<0;
-        row=p.attackVisual>0?0:p.dodgeTimer>0?1:p.invulnerable>.3f?2:3;
-        frame=p.attackVisual>0?std::min(3,int((.18f-p.attackVisual)/.18f*4)):int(time*14)%4;
-    }
-    int cw=int(texture->getSize().x/4),ch=int(texture->getSize().y/4);
-    sf::Sprite sprite(*texture,sf::IntRect({frame*cw,row*ch},{cw,ch}));
-    sprite.setOrigin({cw*.5f,ch*.94f});float scale=size/ch;
-    sprite.setScale({flip?-scale:scale,scale});sprite.setPosition({p.pos.x,p.pos.y+12});
-    oval(p.pos+Vec{3,8},{22,9},{24,45,29,85});
-    if(p.invulnerable>0 && int(time*16)%2==0) sprite.setColor({255,215,175,180});
-    out->draw(sprite);
+    const std::string direction=std::abs(p.facing.x)>std::abs(p.facing.y)?(p.facing.x<0?"left":"right"):(p.facing.y<0?"up":"down");
+    std::string animation=(p.moving?"walk_":"idle_")+direction;float progress=-1;bool flip=false;
+    if(p.attackVisual>0){animation="attack";progress=1-p.attackVisual/.18f;flip=p.facing.x<0;}
+    else if(p.dodgeTimer>0){animation="dodge";progress=1-p.dodgeTimer/.2f;flip=p.facing.x<0;}
+    else if(p.invulnerable>.3f){animation="hit";flip=p.facing.x<0;}
+    else if(p.bossDefeated&&!p.moving)animation="victory";
+    sprites.draw(*out,"characters/chicken",animation,p.pos+Vec{0,12},p.moving?p.walkTime:time,size/110,flip,progress,p.invulnerable>0&&int(time*16)%2==0?sf::Color{255,215,175,180}:sf::Color::White);
 }
 void Renderer::touchHud(const TouchControls& touch) {
     float r=touch.radius;
@@ -108,16 +71,7 @@ void Renderer::touchHud(const TouchControls& touch) {
     button(touch.dodgeButton,r*.56f,"ESQUIVA",false);button(touch.eatButton,r*.56f,"COMER",false);
     button(touch.interactButton,r*.56f,"USAR",false);
 }
-void Renderer::tree(Vec p,std::uint32_t h,float time) {
-    float shift=std::sin(time*.7f+float(h%100))*.7f;
-    oval(p+Vec{14,12},{42,20},{27,61,31,80});
-    rect(p+Vec{-8,-35},{17,42},{104,68,40});rect(p+Vec{-5,-35},{5,41},{163,103,48});
-    oval(p+Vec{shift,-46},{45,33},{28,81,51});oval(p+Vec{-15+shift,-55},{29,30},{42,115,58});
-    oval(p+Vec{19+shift,-53},{27,29},{45,124,64});oval(p+Vec{shift,-73},{31,29},{64,147,66});
-    oval(p+Vec{-9+shift,-82},{19,17},{88,170,76});oval(p+Vec{-14+shift,-87},{10,8},{111,190,86});
-    if(h%3==0) {oval(p+Vec{-20,-63},{4,4},{236,94,67});oval(p+Vec{16,-74},{4,4},{242,108,72});}
-    line(p+Vec{-6,3},p+Vec{-17,9},4,{114,82,47});line(p+Vec{6,3},p+Vec{17,7},4,{114,82,47});
-}
+void Renderer::tree(Vec p,std::uint32_t h,float time) {const std::string types[]={"green","green","green","pink","autumn","palm","pine"};sprites.draw(*out,"trees",types[h%7],p,time+h%17,.57f);}
 void Renderer::icon(LootKind kind,Vec p,float time,float scale) {
     float bob=std::sin(time*3+p.x)*2;
     oval(p+Vec{1,8},{13*scale,5*scale},{19,54,33,65});p.y+=bob;
@@ -132,12 +86,7 @@ void Renderer::icon(LootKind kind,Vec p,float time,float scale) {
         line(p+Vec{0,-6*scale},p+Vec{-7*scale,-17*scale},4*scale,{54,131,66});
         line(p+Vec{1*scale,-6*scale},p+Vec{7*scale,-18*scale},4*scale,{89,171,73});
         line(p+Vec{-4*scale,0},p+Vec{5*scale,2*scale},2,{195,80,31});
-    } else {
-        rect(p+Vec{-16*scale,-11*scale},{32*scale,23*scale},{94,54,32});
-        rect(p+Vec{-16*scale,-15*scale},{32*scale,14*scale},{156,89,38});
-        rect(p+Vec{-13*scale,-14*scale},{3*scale,25*scale},Gold);rect(p+Vec{10*scale,-14*scale},{3*scale,25*scale},Gold);
-        rect(p+Vec{-4*scale,-5*scale},{8*scale,9*scale},Gold);
-    }
+    } else sprites.draw(*out,"chests","common",p+Vec{0,8},0,.3f*scale,false,0);
 }
 void Renderer::terrain(const Simulation& s,Vec camera) {
     int x0=int(std::floor((camera.x-760)/64)),y0=int(std::floor((camera.y-450)/64));
@@ -162,7 +111,7 @@ void Renderer::terrain(const Simulation& s,Vec camera) {
                 Vec root=p+Vec{gx,gy};float sway=std::sin(s.elapsed*1.4f+x+i)*1.2f;
                 line(root,root+Vec{-2+sway,-6},1.5f,{72,133,60,145});line(root,root+Vec{3+sway,-4},1.5f,{175,198,100,150});
             }
-            if(h%9==0) {Vec f=p+Vec{22,35};oval(f,{3,3},{246,220,164});oval(f+Vec{5,3},{3,3},{241,196,152});oval(f+Vec{2,1},{2,2},Gold);}
+            if(h%9==0) sprites.draw(*out,"environment",h%2?"flowers":"flowers2",p+Vec{24,39},0,.35f);
             if(h%13==0) oval(p+Vec{48,22},{5,3},{104,144,66});
         }
     }
@@ -190,21 +139,25 @@ void Renderer::scenery(const Simulation& s,Vec camera) {
     for(int y=y0;y<y0+17;++y) for(int x=x0;x<x0+26;++x) {
         Vec p{(x+.5f)*64,(y+.5f)*64};auto t=s.world.terrain(x,y);auto h=s.world.hash(x,y);
         if(t==Terrain::Tree) objects.push_back({p.y,[&,p,h]{tree(p,h,s.elapsed);}});
-        if(t==Terrain::Rock) objects.push_back({p.y,[&,p]{oval(p+Vec{5,8},{26,13},{33,58,32,80});oval(p,{25,20},{101,115,107});oval(p+Vec{-3,-6},{23,15},{160,167,138});oval(p+Vec{-7,-10},{13,8},{186,187,156});line(p+Vec{3,-13},p+Vec{0,4},2,{111,126,111});}});
+        if(t==Terrain::Rock) objects.push_back({p.y,[&,p]{sprites.draw(*out,"environment","rock",p,0,.30f);}});
     }
     for(auto k:s.world.active()) {
         const auto& chunk=s.world.chunks().at(k);
         for(const auto& l:chunk.loot) if(!l.collected && l.spawned && distance(l.pos,camera)<950) {
             const Loot* item=&l;objects.push_back({l.pos.y,[&,item]{icon(item->kind,item->pos,s.elapsed);}});
         }
-        for(const auto& e:chunk.enemies) if(e.hp>0 && distance(e.pos,camera)<950) {
+        for(const auto& e:chunk.enemies) if((e.hp>0 || e.timer>0) && distance(e.pos,camera)<950) {
             const Enemy* enemy=&e;objects.push_back({e.pos.y,[&,enemy]{
                 const auto& e=*enemy;
                 if(e.brain==Brain::Windup) {
                     oval(e.pos,{e.boss?104.f:74.f,e.boss?74.f:48.f},{224,65,45,65});
                     line(e.pos,e.pos+e.aim*(e.boss?105.f:76.f),8,{255,124,75,170});
                 }
-                chicken(e.pos,e.aim,e.boss?sf::Color{115,79,137}:sf::Color{171,104,67},s.elapsed+e.id,e.boss?1.6f:1,e.brain==Brain::Chase,e.boss);
+                if(e.boss || e.species==Species::Chicken) chicken(e.pos,e.aim,{115,79,137},s.elapsed+e.id,e.boss?1.6f:1,e.brain==Brain::Chase,e.boss);
+                else {const std::string category=e.species==Species::Chick?"characters/chicks":e.species==Species::Fox?"enemies/fox":"enemies/snake";
+                    const std::string animation=e.hp<=0?"death":e.brain==Brain::Windup?"bite":e.brain==Brain::Recover?"hit":e.brain==Brain::Chase?(e.species==Species::Snake?"move":"walk"):"idle";
+                    sprites.draw(*out,category,animation,e.pos,s.elapsed,e.species==Species::Chick?.38f:.55f,e.aim.x<0,e.hp<=0?1-e.timer/.65f:e.brain==Brain::Windup?1-e.timer/.4f:-1);}
+
                 if(e.hp<e.maxHp || e.brain==Brain::Chase || e.boss) {
                     bar(e.pos+Vec{-29,e.boss?-90.f:-58.f},{58,5},e.hp/e.maxHp,{231,103,75});
                     if(e.boss) text(s.player.readyForBoss()?"GUARDIÃO":"GUARDIÃO • SELADO",e.pos+Vec{0,-112},12,Gold,true);
@@ -212,30 +165,12 @@ void Renderer::scenery(const Simulation& s,Vec camera) {
             }});
         }
     }
-    objects.push_back({World::secretHome.y-55,[&]{
-        Vec p=World::secretHome;
-        for(float side:{-85.f,85.f}) {
-            Vec q=p+Vec{side,-55};oval(q+Vec{8,7},{28,14},{35,61,34,90});
-            rect(q+Vec{-19,-70},{38,73},{120,133,115});rect(q+Vec{-16,-68},{13,70},{185,188,157});
-            rect(q+Vec{-25,-76},{50,12},{161,171,139});rect(q+Vec{-25,-8},{50,12},{148,155,125});
-            line(q+Vec{-12,-51},q+Vec{14,-45},3,{93,115,101});oval(q+Vec{13,-16},{12,6},{67,124,68});
-        }
-        text("POMAR ESQUECIDO",p+Vec{0,-117},14,Gold,true);
-        for(int i=0;i<5;++i) oval(p+Vec{-30+i*15.f,-67},{7,4},{164,170,139});
-    }});
-    objects.push_back({65,[&]{
-        Vec p{160,30};oval(p+Vec{12,20},{77,32},{20,51,31,80});
-        rect(p+Vec{-61,-64},{122,84},{142,90,48});rect(p+Vec{-56,-61},{111,73},{210,163,85});
-        for(int i=0;i<5;++i) line(p+Vec{-53,-48+i*14.f},p+Vec{53,-48+i*14.f},2,{174,124,63});
-        rect(p+Vec{-16,-27},{33,48},{69,49,37});rect(p+Vec{-19,17},{39,8},{171,145,98});
-        rect(p+Vec{29,-42},{20,23},{71,113,123});line(p+Vec{39,-42},p+Vec{39,-19},2,Cream);
-        polygon({p+Vec{-76,-54},p+Vec{0,-113},p+Vec{76,-54}},{111,56,43});
-        polygon({p+Vec{-76,-60},p+Vec{0,-119},p+Vec{76,-60}},{211,109,65});
-        for(int i=0;i<4;++i) line(p+Vec{-58+i*11.f,-73-i*9.f},p+Vec{58-i*11.f,-73-i*9.f},3,{232,139,79});
-        text("LAR, DOCE NINHO",p+Vec{0,-7},8,Cream,true);
-        oval(p+Vec{64,19},{15,12},{120,92,54});oval(p+Vec{64,15},{13,10},{184,159,69});
-        icon(LootKind::Egg,p+Vec{63,7},s.elapsed,.65f);
-    }});
+    objects.push_back({World::secretHome.y-55,[&]{for(float side:{-85.f,85.f})sprites.draw(*out,"environment","column",World::secretHome+Vec{side,-55},0,.48f);text("POMAR ESQUECIDO",World::secretHome+Vec{0,-117},14,Gold,true);}});
+    for(const auto& entry:std::vector<std::pair<std::string,Vec>>{{"house",{160,64}},{"barn",{-20,94}},{"shop",{345,124}}}) {
+        const auto name=entry.first;const auto pos=entry.second;objects.push_back({pos.y,[&,name,pos]{sprites.draw(*out,"buildings",name,pos,s.elapsed,name=="house"?.66f:.51f,false,distance(pos,s.player.pos)<145?.999f:0);}});
+    }
+    for(int i=0;i<5;++i){float t=s.elapsed*.45f+i*1.7f;Vec pos{90+i*32.f+std::sin(t)*14,215+std::cos(t*.7f)*24};objects.push_back({pos.y,[&,pos,i,t]{sprites.draw(*out,"characters/chicks","walk",pos,s.elapsed+i,.23f,std::cos(t)<0);}});}
+    for(const auto& chest:s.chests){const auto* c=&chest;objects.push_back({chest.pos.y,[&,c]{const std::string styles[]={"common","rare","epic","legendary"};float progress=c->state==ChestState::Opening?1-c->timer/.65f:int(c->state)>=3?1:0;float opacity=c->state==ChestState::Fading?c->timer/.4f:1;sprites.draw(*out,"chests",styles[c->rarity],c->pos,0,c->state==ChestState::Emerging?.3f*(1-c->timer/.35f):.3f,false,progress,{255,255,255,std::uint8_t(opacity*255)});}});}
     objects.push_back({215,[&]{chicken({86,215},{.7f,-.2f},{227,205,143},s.elapsed,1.05f);text("Dona Cocó",{86,161},12,Cream,true);}});
     objects.push_back({s.player.pos.y,[&]{
         if(s.player.dodgeTimer>0) {oval(s.player.pos-s.player.dodgeDirection*20,{24,15},{252,240,197,70});}

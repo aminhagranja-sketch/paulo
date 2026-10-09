@@ -86,6 +86,16 @@ class PipelineTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, 'fora'):
             pipeline.validate_entry(entry, sheet)
 
+    def test_isolation_removes_neighbor_and_keeps_source_pixels(self):
+        crop=Image.new('RGBA',(40,30))
+        crop.paste((200,120,30,240),(9,4,29,28))
+        crop.paste((20,200,40,240),(0,0,3,12))
+        cleaned,body=pipeline.isolate_components(crop)
+        self.assertEqual(cleaned.getpixel((1,1))[3],0)
+        self.assertEqual(cleaned.getpixel((15,15)),(200,120,30,240))
+        self.assertEqual(body['bodyBounds'],[9,4,29,28])
+        self.assertAlmostEqual(body['pivot'][0],18.5)
+
     def test_background_cleanup_keeps_internal_black_details(self):
         crop = Image.new('RGBA', (12, 12), (0, 0, 0, 255))
         crop.paste((255, 160, 30, 255), (2, 2, 10, 10))

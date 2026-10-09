@@ -9,3 +9,4 @@ screenshot.png
 /node_modules/
 .venv/
 __pycache__/
+server-data/

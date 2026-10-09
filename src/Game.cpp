@@ -102,7 +102,7 @@ int Game::run() {
             while(accumulator>=1.f/60) {
                 Input step=input; if(!first) step.dodge=step.eat=step.interact=false;
                 sim.update(1.f/60,step);
-                if(step.interact && sim.atNest() && !smoke) {upgrades=true;touch.reset();} accumulator-=1.f/60; first=false;
+                if(step.interact && (sim.atNest()||sim.atShop()) && !smoke) {upgrades=true;touch.reset();} accumulator-=1.f/60; first=false;
             }
             if(first) pulses=input; // preserve edge inputs if no fixed step elapsed
             camera+=(sim.player.pos-camera)*std::min(1.f,dt*7);

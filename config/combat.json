@@ -1,0 +1,5 @@
+{
+  "chestPercent": [5, 10, 15],
+  "rarityPercent": [70, 23, 6, 1],
+  "description": "Chance por pintinho, raposa e cobra; raridades comum, raro, épico e lendário. As faixas 1–9, 10–19 e 20–40 são definidas em CombatConfig.hpp."
+}

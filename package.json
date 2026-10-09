@@ -2,6 +2,15 @@
   "name": "meu-galinheiro-browser-tests",
   "private": true,
   "version": "1.1.0",
-  "scripts": {"test:web":"node tests/browser-test.cjs"},
-  "devDependencies": {"playwright":"1.62.1"}
+  "scripts": {
+    "test:web": "node tests/browser-test.cjs",
+    "start": "node server/index.cjs",
+    "test:multiplayer": "node tests/multiplayer-test.cjs"
+  },
+  "devDependencies": {
+    "playwright": "1.62.1"
+  },
+  "dependencies": {
+    "ws": "8.18.3"
+  }
 }

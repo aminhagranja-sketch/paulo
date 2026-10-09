@@ -37,3 +37,5 @@ jobs:
           server_pid=$!
           trap 'kill "$server_pid" 2>/dev/null || true; wait "$server_pid" 2>/dev/null || true' EXIT
           npm run test:web
+      - name: Authoritative multiplayer integration
+        run: npm run test:multiplayer

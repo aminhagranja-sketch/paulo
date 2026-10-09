@@ -1,0 +1,48 @@
+const assert=require('node:assert/strict'),fs=require('node:fs'),path=require('node:path'),crypto=require('node:crypto');
+const {spawn}=require('node:child_process');const {chromium}=require('playwright');const createGame=require('../web/granja.js');
+const port=9094,origin=`http://127.0.0.1:${port}`;let child,browser,directory;
+const sleep=ms=>new Promise(resolve=>setTimeout(resolve,ms));
+const inventory=p=>[p.eggs,p.gold,p.food,p.coins,p.corn,p.feathers,p.materials,p.evolutionItems];
+async function fixture(level,pos){const m=await createGame({locateFile:file=>path.resolve('web',file)});const save=JSON.parse(m.UTF8ToString(m._game_save()));save.player.level=level;save.player.pos=pos;save.player.hp=100;save.player.xp=save.player.level*40+60-(25*(1+Math.floor(level/5)));save.encounterLevel=level;for(const c of save.chunks)for(const e of c.enemies)if(e.id===1100){e.hp=1;e.pos=level===9?[500,160]:[700,160];}const token=crypto.randomBytes(32).toString('hex'),key=crypto.createHash('sha256').update(token).digest('hex');fs.writeFileSync(path.join(directory,key+'.json'),JSON.stringify({version:1,id:crypto.randomBytes(8).toString('hex'),name:`Jogador ${level}`,save}));return token;}
+(async()=>{
+ fs.mkdirSync('build/validation',{recursive:true});directory=fs.mkdtempSync(path.resolve('build/validation/multiplayer-'));
+ const config=path.join(directory,'combat.json');fs.writeFileSync(config,JSON.stringify({chestPercent:[100,100,100],rarityPercent:[100,0,0,0]}));
+ const tokenA=await fixture(9,[440,160]),tokenB=await fixture(19,[500,160]);
+ child=spawn(process.execPath,['server/index.cjs'],{env:{...process.env,PORT:String(port),GRANJA_DATA_DIR:directory,GRANJA_COMBAT_CONFIG:config},stdio:['ignore','pipe','pipe']});let logs='';child.stderr.on('data',d=>logs+=d);
+ let healthy=false;for(let n=0;n<100;n++){try{healthy=(await fetch(origin+'/health')).ok;}catch{}if(healthy)break;await sleep(50);}assert(healthy,'Server failed to start: '+logs);
+ browser=await chromium.launch({executablePath:process.env.CHROMIUM_PATH||'/usr/bin/chromium',headless:true,args:['--no-sandbox']});
+ const contexts=await Promise.all([browser.newContext(),browser.newContext()]);
+ const pages=await Promise.all(contexts.map(c=>c.newPage()));const [a,b]=pages,errors=[];for(const p of pages)p.on('pageerror',e=>errors.push(e.message));
+ for(let n=0;n<2;n++)await contexts[n].addInitScript(({token,key})=>localStorage.setItem(key,token),{token:n?tokenB:tokenA,key:`granja-session:ws://127.0.0.1:${port}`});
+ await Promise.all(pages.map(p=>p.goto(origin,{waitUntil:'networkidle'})));await Promise.all(pages.map(p=>p.waitForFunction(()=>window.granjaDebug?.online?.ready)));
+ await a.waitForFunction(()=>window.granjaDebug.state.players.length===1);await b.waitForFunction(()=>window.granjaDebug.state.players.length===1);
+ assert(await a.evaluate(()=>window.granjaDebug.state.enemies.filter(e=>!e[6]).every(e=>e[9]===3)));
+ assert(await b.evaluate(()=>window.granjaDebug.state.enemies.filter(e=>!e[6]).every(e=>e[9]===2)));
+ const bBefore=await b.evaluate(()=>window.granjaDebug.state.player);await a.locator('#start').click();await a.keyboard.down(' ');
+ await a.waitForFunction(()=>window.granjaDebug.state.player.level===10);await a.keyboard.up(' ');
+ assert(await a.evaluate(()=>window.granjaDebug.state.enemies.filter(e=>!e[6]).every(e=>e[9]===2)));
+ assert.equal(await b.evaluate(()=>window.granjaDebug.state.player.level),19,'One player changed the other level');
+ assert.equal(await b.evaluate(()=>window.granjaDebug.state.player.hp),bBefore.hp,'PvP damage was applied');
+ await a.waitForFunction(()=>window.granjaDebug.state.chests.length===1);
+ await b.evaluate(()=>window.granjaDebug.online.send('interact'));await b.waitForTimeout(120);
+ assert.equal(await b.evaluate(()=>window.granjaDebug.state.chests.length),0,'Another player saw private drops');assert.deepEqual(inventory(await b.evaluate(()=>window.granjaDebug.state.player)),inventory(bBefore),'Another player stole a chest');
+ await a.keyboard.down('d');await a.waitForFunction(()=>window.granjaDebug.state.player.x>464);await a.keyboard.up('d');
+ await a.evaluate(()=>window.granjaDebug.online.send('interact'));await a.waitForFunction(()=>window.granjaDebug.state.chests[0]?.[4]===2);
+ const beforeReward=inventory(await a.evaluate(()=>window.granjaDebug.state.player));
+ await a.evaluate(()=>window.granjaDebug.online.ws.close());await a.waitForFunction(()=>!window.granjaDebug.online.ready);await a.waitForFunction(()=>window.granjaDebug.online.ready);
+ assert.equal(await a.evaluate(()=>window.granjaDebug.state.player.level),10);
+ await a.locator('#start').click();await a.waitForFunction(()=>window.granjaDebug.state.chests[0]?.[4]>=3);
+ const rewarded=inventory(await a.evaluate(()=>window.granjaDebug.state.player));assert.notDeepEqual(rewarded,beforeReward,'Chest reward lost on reconnect');
+ await Promise.all([a.evaluate(()=>window.granjaDebug.online.send('interact')),b.evaluate(()=>window.granjaDebug.online.send('interact'))]);
+ await a.waitForFunction(()=>window.granjaDebug.state.chests.length===0);await a.waitForTimeout(150);assert.deepEqual(inventory(await a.evaluate(()=>window.granjaDebug.state.player)),rewarded,'Repeated interaction duplicated reward');
+ assert.deepEqual(inventory(await b.evaluate(()=>window.granjaDebug.state.player)),inventory(bBefore),'Simultaneous collection changed the wrong inventory');
+ // Client C++ state and forged writes cannot change authoritative server progress.
+ await a.evaluate(()=>{const d=window.granjaDebug,m=d.module,save=JSON.parse(m.UTF8ToString(m._game_save()));save.player.level=40;save.player.coins=999999;m.ccall('game_load','number',['string'],[JSON.stringify(save)]);d.online.send('set_level',{level:40});d.online.send('collect',{id:1});});await a.waitForTimeout(150);
+ assert.equal(await a.evaluate(()=>window.granjaDebug.state.player.level),10);
+ await b.locator('#start').click();await b.keyboard.down('d');await b.keyboard.down(' ');await b.waitForFunction(()=>window.granjaDebug.state.player.level===20);await b.keyboard.up('d');await b.keyboard.up(' ');
+ assert(await b.evaluate(()=>window.granjaDebug.state.enemies.filter(e=>!e[6]).every(e=>e[9]===1)));
+ assert.equal(await a.evaluate(()=>window.granjaDebug.state.player.level),10);
+ assert.deepEqual(errors,[],'Multiplayer browser errors');
+ await a.screenshot({path:path.join(directory,'player-a.png')});await b.screenshot({path:path.join(directory,'player-b.png')});
+ console.log('PASS multiplayer: two independent browser contexts, visible players, individual 9→10 / 19→20 bands, no PvP, private drops, simultaneous interaction, reconnect while opening, one reward, forged writes rejected.');
+})().catch(error=>{console.error(error);process.exitCode=1;}).finally(async()=>{if(browser)await browser.close();if(child){child.kill('SIGTERM');await sleep(500);}if(directory){for(const file of fs.readdirSync(directory))if(file.endsWith('.json'))fs.unlinkSync(path.join(directory,file));}});

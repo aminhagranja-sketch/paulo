@@ -1,5 +1,6 @@
 #include "granja/Simulation.hpp"
 namespace granja {
+std::uint32_t Simulation::random() {randomState^=randomState<<13;randomState^=randomState>>17;randomState^=randomState<<5;return randomState;}
 void Simulation::notify(std::string text) { message=std::move(text); messageTimer=5; }
 void Simulation::effect(Vec p,int kind,std::string text) {
     effects.push_back({p,{0,-32},.8f,.8f,kind,std::move(text)});
@@ -16,6 +17,7 @@ void Simulation::attack(Vec aim) {
     if(player.attackCooldown>0 || player.stamina<12 || player.dodgeTimer>0) return;
     player.facing=normalized(aim); player.attackCooldown=.34f; player.attackVisual=.18f; player.stamina-=12;
     for(auto k:world.active()) for(auto& e:world.ensure(k).enemies) {
+        if(!e.boss && CombatConfig::band(world.encounterLevel())!=CombatConfig::band(player.level)) continue;
         if(e.hp<=0 || (e.boss && !player.readyForBoss())) continue;
         Vec delta=e.pos-player.pos;
         if(length(delta)<(e.boss?112.f:95.f) && dot(normalized(delta),player.facing)>.25f) {
@@ -28,6 +30,11 @@ void Simulation::attack(Vec aim) {
                 for(auto& drop:world.ensure(k).loot) if(drop.sourceEnemy==e.id) {
                     drop.spawned=true;
                     drop.pos=e.pos+Vec{drop.kind==LootKind::GoldenEgg?24.f:0.f,0};
+                }
+                if(!e.boss && random()%100<std::uint32_t(drops.chance(e.species))) {
+                    int roll=int(random()%100),rarity=0;
+                    while(rarity<3 && roll>=drops.rarityPercent[rarity]) {roll-=drops.rarityPercent[rarity];++rarity;}
+                    chests.push_back({nextChestId++,e.pos,rarity,CombatConfig::level(player.level)});
                 }
                 saveRequested=true;
                 player.coins+=e.boss?150:12*e.tier; addXp(e.boss?250:25*e.tier);
@@ -88,7 +95,7 @@ void Simulation::updateEnemies(float dt) {
         if(d<aggro && !atNest() && distance(e.pos,e.home)<650) {
             e.brain=Brain::Chase; e.aim=normalized(player.pos-e.pos);
             if(d<reach && e.cooldown<=0) { e.brain=Brain::Windup; e.timer=e.boss?.55f:.4f; }
-            else {const float speed=e.boss?155.f:(95.f+e.tier*12)*(e.species==Species::Fox?1.65f:e.species==Species::Snake?.75f:1.f);e.pos=world.move(e.pos,e.aim*(dt*speed),e.boss?27.f:18.f);}
+            else {const float speed=e.boss?155.f:CombatConfig::speed(e.species,player.level);e.pos=world.move(e.pos,e.aim*(dt*speed),e.boss?27.f:18.f);}
         } else {
             e.brain=Brain::Wander;
             Vec target=e.home+Vec{std::cos(elapsed*.45f+e.id)*55,std::sin(elapsed*.31f+e.id)*55};
@@ -97,7 +104,40 @@ void Simulation::updateEnemies(float dt) {
         }
     }
 }
+void Simulation::rewardChest(ChestDrop& chest) {
+    if(chest.rewarded) return;
+    chest.rewarded=true;
+    const int amount=(1+chest.level/5)*(1+chest.rarity);
+    std::string text;int quantity=amount;
+    switch(random()%7) {
+        case 0: player.eggs+=amount;text="ovos";break;
+        case 1: player.corn+=amount;text="milho";break;
+        case 2: player.feathers+=amount;text="penas";break;
+        case 3: quantity=amount*10;player.coins+=quantity;text="moedas";break;
+        case 4: player.food+=amount;text="alimentos";break;
+        case 5: player.materials+=amount;text="materiais";break;
+        case 6: quantity=1+chest.rarity;player.evolutionItems+=quantity;text="itens de evolução";break;
+    }
+    effect(chest.pos,2,"Baú: +"+std::to_string(quantity)+" "+text);
+    notify("Baú aberto: "+text+" adicionados ao inventário.");saveRequested=true;
+}
+void Simulation::updateChests(float dt,bool interact) {
+    bool used=false;
+    for(auto& chest:chests) {
+        chest.timer=std::max(0.f,chest.timer-dt);
+        if(chest.state==ChestState::Emerging && chest.timer<=0) chest.state=ChestState::Closed;
+        if(chest.state==ChestState::Closed && interact && !used && distance(player.pos,chest.pos)<=55) {
+            used=true;chest.state=ChestState::Opening;chest.timer=.65f;saveRequested=true;
+        } else if(chest.state==ChestState::Opening && chest.timer<=0) {
+            rewardChest(chest);chest.state=ChestState::Open;chest.timer=.6f;
+        } else if(chest.state==ChestState::Open && chest.timer<=0) {
+            chest.state=ChestState::Fading;chest.timer=.4f;
+        }
+    }
+    std::erase_if(chests,[](const ChestDrop& chest){return chest.state==ChestState::Fading && chest.timer<=0;});
+}
 void Simulation::update(float dt,const Input& input) {
+    syncProgression();
     dt=std::clamp(dt,0.f,.05f); elapsed+=dt; messageTimer=std::max(0.f,messageTimer-dt);
     player.invulnerable=std::max(0.f,player.invulnerable-dt);
     player.attackCooldown=std::max(0.f,player.attackCooldown-dt);
@@ -119,7 +159,7 @@ void Simulation::update(float dt,const Input& input) {
     world.stream(player.pos);
     if(input.attack) attack(player.facing);
     if(input.eat && player.food>0 && player.hp<player.maxHp()) { --player.food; player.hp=std::min(player.maxHp(),player.hp+45); effect(player.pos,3,"+45 vida"); }
-    collect(); updateEnemies(dt);
+    collect(); updateEnemies(dt); updateChests(dt,input.interact);
     if(input.interact) {
         if(atNest()) { player.hp=player.maxHp(); player.stamina=100; saveRequested=true;
             notify("Dona Cocó: descanse! 1: vida  2: ataque  3: velocidade. Explore, depois vença o Guardião.");
@@ -129,5 +169,6 @@ void Simulation::update(float dt,const Input& input) {
     }
     for(auto& e:effects) { e.life-=dt; e.pos+=e.velocity*dt; }
     std::erase_if(effects,[](const Effect& e){return e.life<=0;});
+    syncProgression();
 }
 }

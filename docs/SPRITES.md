@@ -1,4 +1,4 @@
-# Artes originais integradas à Web
+# Artes originais integradas à Web e SFML
 
 O RAR fornecido contém as sete folhas do [pedido](REQUEST-MULTIPLAYER.md) e uma
 folha adicional da galinha adulta. Todas foram extraídas e preservadas em
@@ -12,7 +12,7 @@ folha adicional da galinha adulta. Todas foram extraídas e preservadas em
 | Decoração | 591f28fd-06f3-46d7-bce3-11dfd7e2e488.png | 12 |
 | Cobras | 15681c87-bdbc-446b-a3c2-c1d3853e999a.png | 25 |
 | Raposas | bef336d9-407a-4ad2-a747-f4ff3616e2ba.png | 15 |
-| Pintinhos | ca70ca01-1579-450b-9d26-5dd3eab5ecb5.png | 17 |
+| Pintinhos | ca70ca01-1579-450b-9d26-5dd3eab5ecb5.png | 19 |
 | Galinha adulta | 5462a363-df7e-4da6-b2ce-1a715d75e117.png | 40 |
 
 ## Reproduzir
@@ -41,7 +41,7 @@ individuais: usa somente os atlas.
 ## Recortes e transparência
 
 As regiões irregulares foram conferidas manualmente nas fontes e no jogo.
-Não foi imposta uma grade universal. Cada quadro tem `rect` e `origin` próprios.
+Não foi imposta uma grade universal. Cada quadro tem `rect` e `origin` próprios. Componentes conectados isolam o personagem dos fragmentos vizinhos; efeitos de ataque aprovados são mantidos. Os pixels preservados conservam o RGBA original. `bodyBounds`, pivôs nos pés e `scaleAdjustment` estabilizam alinhamento e tamanho aparente entre poses.
 As sequências usam quadros existentes; ações sem orientações alternativas
 utilizam a pose disponível ou espelhamento horizontal.
 
@@ -63,18 +63,8 @@ obrigatória; não sobrescreve o manifesto aprovado.
 
 ## Comportamento integrado e limites
 
-- A galinha Web usa a folha adulta original em quatro direções, ataque, esquiva,
-  dano e vitória. Os atlas gerados anteriormente continuam na versão SFML.
-- Árvores usam quadros de vento e diminuem opacidade quando encobrem o jogador.
-- Pedras, flores e colunas usam decoração original; o mundo mantém suas colisões.
-- Casa, celeiro e loja mudam de estado de porta por proximidade. A loja permite
-  comprar as melhorias existentes com validação de distância e saldo no C++.
-- Pintinhos passeiam em trajetos simples na vila. Sem interação ou companheiros.
-- Cobras e raposas usam animações de movimentação, ataque, dano e derrota;
-  raposas perseguem mais rápido que cobras. Veneno, investidas e esquiva de
-  inimigos ainda não fazem parte da IA atual.
-- Baús têm seis estilos e sequência de abertura após a coleta validada pela
-  simulação local. A coleta atual ocorre por proximidade, sem servidor.
-- Construções adicionais são visuais; não há interiores ou transição de área.
-- A apresentação continua top-down Canvas 2D. Multiplayer, PostgreSQL e câmera
-  Babylon 2.5D permanecem pendentes.
+Web e SFML carregam os mesmos 189 quadros em dez páginas de atlas. A galinha usa quatro direções, ataque, esquiva, dano e vitória. Canvas desativa suavização e SFML usa `setSmooth(false)`; posições são arredondadas. Árvores reduzem opacidade quando encobrem o jogador. Construções usam sequências de portas compatíveis; não há interiores.
+
+Pintinhos, raposas e cobras inimigos usam movimentação, ataque, dano e derrota na faixa de nível correspondente. Pintinhos da vila são decorativos. Veneno e investidas específicas ainda não fazem parte da IA. Baús de inimigos animam nascimento, espera, abertura e desaparecimento; o C++ valida interação e recompensa única tanto em solo como no servidor. Baús fixos mantêm coleta por proximidade.
+
+A apresentação é top-down 2D. [O servidor opcional](../server/README.md) compartilha avatares e terreno, mantendo encontros e drops privados. Não há câmera Babylon ou PostgreSQL nesta implementação.

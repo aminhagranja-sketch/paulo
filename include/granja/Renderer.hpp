@@ -1,6 +1,7 @@
 #pragma once
 #include "Simulation.hpp"
 #include "TouchControls.hpp"
+#include "SpriteAtlas.hpp"
 #include <SFML/Graphics.hpp>
 #include <filesystem>
 namespace granja {
@@ -12,8 +13,7 @@ public:
     static sf::View worldView(sf::Vector2u size,Vec camera);
 private:
     sf::Font font;
-    sf::Texture playerAtlas,actionAtlas;
-    bool hasActions{};
+    SpriteAtlas sprites;
     void playerSprite(const Player& p,float time,float size=80);
     void touchHud(const TouchControls& touch);
     sf::RenderTarget* out{};
