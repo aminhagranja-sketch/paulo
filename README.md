@@ -1,17 +1,11 @@
 # Navegador / celular
 
-Site estático. Hospede esta pasta em HTTPS; não abra o index.html diretamente pelo sistema de arquivos. WebAssembly usa o mesmo núcleo C++20 do desktop. Atlas preparados a partir da referência do usuário por imagegen.
+Cliente responsivo Canvas 2D com o mesmo C++20 compilado em WASM. Os 189 quadros são recortes dos oito PNGs originais do usuário, sem redesenho. Controles: analógico esquerdo, Bicar à direita, Usar, Esquiva, Comer e Bolsa (I).
 
-Recompilar: `scripts/build-web.sh` (Emscripten 3.1.69). Testar: `npm run test:web` com servidor em 127.0.0.1:8088. Licenças do projeto e de dependências estão no repositório principal.
+Site solo: https://aminhagranja-sketch.github.io/paulo/. Hospede em HTTPS; não abra index.html como arquivo. Recompile com `scripts/build-web.sh` (Emscripten 3.1.69). Reimporte sprites com `scripts/build-game-art.sh` (Python/Pillow).
 
-GitHub Pages: Settings → Pages → Deploy from a branch → `gh-pages` / `/ (root)` → Save. Endereço esperado: https://aminhagranja-sketch.github.io/paulo/.
+Inimigos: nível 1–9 pintinhos, 10–19 raposas, 20–40 cobras. Baús de inimigos exigem E/Usar. Save local v3 mantém drops e abertura; versões antigas preservam inventário.
 
-Inventário: botão Bolsa ou tecla I. Alimentos podem ser usados pela Bolsa.
-Ovos aparecem somente após a derrota de inimigos; o save v2 mantém drops
-pendentes e coletados. Saves v1 preservam o inventário e migram o estado do mapa.
-A versão ainda é individual; cooperação e persistência de servidor estão pendentes.
+Multiplayer opcional: `npm start` na raiz serve cliente e WebSocket. O cliente do Pages aceita `?server=wss://SEU_HOST/ws`. Consulte `server/README.md`; o Pages sozinho não executa o servidor.
 
-As oito folhas originais do RAR são usadas na Web por atlas e metadados.
-Para reimportar: `./scripts/build-game-art.sh` na raiz, com Python/Pillow.
-A loja da vila aceita as melhorias existentes; portas mudam por proximidade.
-Não há interiores nem multiplayer nesta versão.
+Testes: `npm run test:web` com servidor estático interno em 127.0.0.1:8088; `npm run test:multiplayer` inicia e encerra seu próprio servidor, com perfis temporários.

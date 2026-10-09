@@ -4,3 +4,5 @@
 
 #inventoryItems{display:grid;grid-template-columns:1fr auto;text-align:left;gap:12px;margin:20px 0}#inventoryItems dt{color:var(--cream)}#inventoryItems dd{margin:0;color:var(--gold);font-weight:700}
 @media(max-width:420px){header{gap:4px}.status{width:155px;flex-shrink:0}.top-actions{gap:4px}.top-actions button{padding:10px 7px;font-size:12px}}
+
+canvas{image-rendering:pixelated}
