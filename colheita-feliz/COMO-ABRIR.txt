@@ -1,0 +1,16 @@
+COLHEITA FELIZ — ABRIR NO COMPUTADOR
+
+1. Extraia este ZIP em uma pasta.
+2. Abra ABRIR-COLHEITA-FELIZ.html com Chrome, Edge, Firefox ou Safari.
+3. Clique em Explorar demonstração para usar dados simulados.
+
+O HTML tem imagens e código embutidos. Não é necessário instalar Node.js ou Expo.
+Este é um painel web adaptado do projeto Colheita Feliz, para monitorar umidade
+e irrigação. Para equipamentos reais, configure a URL da API e o identificador
+da plantação. O servidor e os sensores não estão incluídos.
+
+Versão online:
+https://aminhagranja-sketch.github.io/paulo/colheita-feliz/
+
+Testes: demonstração offline após abertura, controles, armazenamento local,
+API simulada e layout de computador/celular. Não foi usado equipamento real.
